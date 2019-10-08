@@ -35,14 +35,15 @@ OVERLEAF documentación: link
     - [ ] Silueta del nuesto vs libreria
 
 5. Conclusiones
-  - Recursos utilizados
-  - Memoria utilizada
-  - Optimizar?
+    - Recursos utilizados
+    - Memoria utilizada al procesar
+    - Tiempo de procesado
+    - Optimizar?
 
 - [ ] **Recordar recuperar el texto** de la representación en el espacio del cluster
 + **Añadir al cluster otro artículo**
 + **Añadir variantes**
-  1. BoW
-  2. TD-IDF
-  3. word2vec
+    1. BoW
+    2. TD-IDF
+    3. word2vec
 + word_embedings Buscar correlaciones entre palabras (Ej: tags/temas en los articulos) ¿doc2vec?
