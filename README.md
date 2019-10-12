@@ -1,6 +1,6 @@
 # Clustering
 
-OVERLEAF documentación: link
+OVERLEAF documentación: https://es.overleaf.com/3736895225ghwtsntvthvn
 
 1. Preprocesado (Limpiar el texto)
     - [ ] Asegurar el idioma (English)
