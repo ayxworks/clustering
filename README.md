@@ -42,6 +42,7 @@ OVERLEAF documentación: https://es.overleaf.com/3736895225ghwtsntvthvn
 
 - [ ] **Recordar recuperar el texto** de la representación en el espacio del cluster
 + **Añadir al cluster otro artículo**
++ **Representación**
 + **Añadir variantes**
     1. BoW
     2. TD-IDF
