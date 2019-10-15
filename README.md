@@ -14,6 +14,8 @@ OVERLEAF documentación: https://es.overleaf.com/3736895225ghwtsntvthvn
 
 2. Programar el algoritmo elegido
     - [ ] Codigo de clustering
+        - [ ] Generación
+        - [ ] Alamacenamiento
     1. Utilizar los otros algoritmos con otras librerias 
         - [ ] comparar clusters? porqué se han agrupado de tal manera?
 
