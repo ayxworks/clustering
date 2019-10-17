@@ -51,20 +51,22 @@ class Cluster:
         distMin = 99999
         i = 1
         j=0
-        long = len(centroides)
         solucion=()
 
-        while j<long-1:
-            while i<long:
-                distAct = self.distManhattan(centroides[j][1],centroides[i][1])
-                if distAct<distMin:
-                    distMin=distAct
-                    solucion = (centroides[j][0],centroides[i][0],distMin)
+        for cent1 in centroides.keys():
+            if i==len(centroides):
+                print(solucion)
+                return solucion
+            else:
+                for cent2 in centroides.keys():
+                    if j>0:
+                        if cent1 != cent2:
+                            distAct = self.distManhattan(centroides[cent1],centroides[cent2])
+                            if distAct<distMin:
+                                distMin=distAct
+                                solucion = (cent1,cent2,distMin)
+                    j+=1
                 i+=1
-            j+=1
-            i=j+1
-        print(solucion)
-        return solucion
 
     """
         Calcula la distancia manhattan entre dos centroides.
@@ -112,8 +114,12 @@ class Cluster:
         return centroide"""
         
 
+centroides = {'C1': (1,2,6,2,9), 'C2': (4,5,9,1,3), 'C3': (7,3,7,4,1), 'C4': (3,6,8,4,9)}
+
+
 
 cl = Cluster([(1,2),(3,5),(1,3),(8,5)])
-centroides = [('C1',(3,7)),('C2',(2,2)),('C3',(9,1)),('C4',(4,6))]
+"centroides = [('C1',(3,7)),('C2',(2,2)),('C3',(9,1)),('C4',(4,6))]"
 
 cl.minimaDistancia(centroides)
+
