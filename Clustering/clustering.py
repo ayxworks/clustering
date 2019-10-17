@@ -45,7 +45,43 @@ class Cluster:
             iteracion+=1
             
             print(self.dist)
-        
+
+
+    def minimaDistancia (self, centroides):
+        distMin = 99999
+        i = 1
+        j=0
+        long = len(centroides)
+        solucion=()
+
+        while j<long-1:
+            while i<long:
+                distAct = self.distManhattan(centroides[j][1],centroides[i][1])
+                if distAct<distMin:
+                    distMin=distAct
+                    solucion = (centroides[j][0],centroides[i][0],distMin)
+                i+=1
+            j+=1
+            i=j+1
+        print(solucion)
+        return solucion
+
+    """
+        Calcula la distancia manhattan entre dos centroides.
+        Pre : Coordenadas de dos centroides
+        Post: Distancia Manhattan entre los dos centroides.
+    """
+    def distManhattan(self,centr1,centr2):
+        dist=0
+        i=0
+        while i<len(centr1):
+            dist+= abs(centr1[i]-centr2[i])
+            i+=1
+        return dist
+
+
+
+
     """
         Dado una lista de vectores te devuelve su centroide
         pre: Una lista no vacia de tuplas numericas
@@ -78,5 +114,6 @@ class Cluster:
 
 
 cl = Cluster([(1,2),(3,5),(1,3),(8,5)])
+centroides = [('C1',(3,7)),('C2',(2,2)),('C3',(9,1)),('C4',(4,6))]
 
-cl.clustering()
+cl.minimaDistancia(centroides)
