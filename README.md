@@ -13,9 +13,9 @@ OVERLEAF documentación: https://es.overleaf.com/3736895225ghwtsntvthvn
     - [ ] Quitar numeros? guardar fechas?
 
 2. Programar el algoritmo elegido
-    - [ ] Codigo de clustering
-        - [ ] Generación
-        - [ ] Alamacenamiento
+    - [X] Codigo de clustering
+        - [X] Generación
+        - [X] Alamacenamiento
     1. Utilizar los otros algoritmos con otras librerias 
         - [ ] comparar clusters? porqué se han agrupado de tal manera?
 
