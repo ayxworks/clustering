@@ -20,6 +20,8 @@ class Cluster:
         self.dist = {}
         self.dist[0] = copy(self.clust)
 
+
+
     """
     Hace el poceso de clustering
     Pre : Haber creado la clase con los vectores numericos.
@@ -51,6 +53,8 @@ class Cluster:
             
         "print(self.dist)"
     
+    
+    
     """
     Guarda la estructura jerarquica
     Pre : El path debe existir
@@ -63,8 +67,10 @@ class Cluster:
 
 cl = Cluster([(1,3),(1,4),(2,2),(5,2),(5,1),(7,2)])
 
-cl.clustering()
+cl.clustering() 
 print(cl.dist)
+
+cl.guardar('resultados\dist.txt')
 
 
 

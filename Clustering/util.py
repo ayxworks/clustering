@@ -25,7 +25,6 @@ def minimaDistancia (centroides):
                             solucion = (cent1,cent2,distMin)
                 j+=1
             i+=1
-            print(i)
 
 """
     Calcula la distancia manhattan entre dos centroides.
