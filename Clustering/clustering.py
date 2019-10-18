@@ -4,9 +4,9 @@ Created on Wed Oct 16 13:14:33 2019
 
 @author: StromValhalla
 """
-"""from numpy import mean"""
 import util as ut
 from copy import copy
+import pickle
 
 class Cluster:
     def __init__(self, vectores):
@@ -20,7 +20,11 @@ class Cluster:
         self.dist = {}
         self.dist[0] = copy(self.clust)
 
-    
+    """
+    Hace el poceso de clustering
+    Pre : Haber creado la clase con los vectores numericos.
+    Post: La estructura jerarquica de la agrupacion
+    """
     def clustering (self):
         iteracion = 0
         
@@ -30,9 +34,9 @@ class Cluster:
             for each in self.clust.keys():
                 centroide = ut.calcularCentro(self.clust[each])
                 centroides[each] = centroide
-                
-            """Esta parte la tengo que cambiar, es solo provisional"""
+
             cl1, cl2, dist = ut.minimaDistancia(centroides)
+            
     
             vector1 = self.clust[cl1]
             vector2 = self.clust[cl2]
@@ -45,15 +49,25 @@ class Cluster:
             
             iteracion+=1
             
-        print(self.dist)
-
-
-
-        
+        "print(self.dist)"
+    
+    """
+    Guarda la estructura jerarquica
+    Pre : El path debe existir
+    Post: El archivo con la estructura de datos guardada
+    """
+    def guardar(self, path):
+        with open(path, "wb") as fp:   #Pickling
+            pickle.dump(self.dist, fp)
 
 
 cl = Cluster([(1,3),(1,4),(2,2),(5,2),(5,1),(7,2)])
+
 cl.clustering()
+print(cl.dist)
+
+
+
 
 
 
