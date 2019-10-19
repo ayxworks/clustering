@@ -12,9 +12,9 @@ class Cluster:
     def __init__(self, vectores):
         self.vect = vectores
         self.clust = {}
-        i = 1
+        i = 0
         while i<len(vectores): 
-            self.clust[f'C{i}'] = [vectores[i-1]]
+            self.clust[i+1] = [vectores[i]]
             i+=1
         
         self.dist = {}
@@ -61,8 +61,8 @@ class Cluster:
     Post: El archivo con la estructura de datos guardada
     """
     def guardar(self, path):
-        with open(path, "wb") as fp:   #Pickling
-            pickle.dump(self.dist, fp)
+        with open(path, "wb") as res:   #Pickling
+            pickle.dump(self.dist, res)
 
 
 cl = Cluster([(1,3),(1,4),(2,2),(5,2),(5,1),(7,2)])
