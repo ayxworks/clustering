@@ -4,17 +4,21 @@ os: para interactuar con el sistema operativo
 nltk: para procesar el texto (linguistica y tokenizacion)
 string: para trabajr con el texto y encoding
 """
-#!/usr/bin/env python
+# !/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import os
 import nltk
 import string
 
-from nltk.stem.porter import *
 from nltk.corpus import wordnet
 from nltk.corpus import stopwords
+from nltk.stem.porter import PorterStemmer
 from nltk.stem.wordnet import WordNetLemmatizer
+
+from sklearn.feature_extraction.text import CountVectorizer          #For Bag of words
+from sklearn.feature_extraction.text import TfidfVectorizer          #For TF-IDF
+#from gensim.models import Word2Vec                                   #For Word2Vec
 
 ### clases ###
 class ListaDicc:
@@ -23,10 +27,10 @@ class ListaDicc:
         self.cuerpo = []
 
 class Datos:
-    #Se guardan los temas y sitios, por si se quiere omitir en el clustering o no
+    # Se guardan los temas y sitios, por si se quiere omitir en el clustering o no
     etiquetas_temas_sitios = set()
 
-    def __init__(self,articulo):
+    def __init__(self, articulo):
         self.temas = []
         self.sitios = []
         self.palabras = ListaDicc()
@@ -34,7 +38,7 @@ class Datos:
         self.asignarDescripcionArticulo(articulo)
 
     ### funciones ###
-    def asignarDescripcionArticulo(self,articulo):
+    def asignarDescripcionArticulo(self, articulo):
         """ funcion que asugna la descripcion del articulo
         """
         for tema in articulo.temas.children:
@@ -67,14 +71,15 @@ class Datos:
         sin_puntuacion = sin_digitos.translate(None, string.punctuation)
         # separar el texto en tokens
         tokens = nltk.word_tokenize(sin_puntuacion)
-        # remove class labels, stopwords, and non-english words
+        # quitar si el usuario quiere la 'clase'/etiquetas/temas, stop words y palabras que no sean en ingles
+        sin_stop = [w for w in tokens if not w in stopwords.words('english')]
         if bool_etiquetas:
-            no_class_labels = [w for w in tokens]
-            no_stop_words = [w for w in no_class_labels if not w in stopwords.words('english')]
+            clase_etiqueta_art = [w for w in sin_stop]
         else:
-            no_class_labels = [w for w in tokens]
-            no_stop_words = [w for w in no_class_labels if not w in stopwords.words('english')]
-        eng = [y for y in no_stop_words if wordnet.synsets(y)]
+            clase_etiqueta_art = [w for w in sin_stop if not w in Datos.etiquetas_temas_sitios]
+
+        eng = [y for y in clase_etiqueta_art if wordnet.synsets(y)]
+
         """
         !!!PARA MAS ADELANTE OBTENER RAICES!!!
         
@@ -93,3 +98,12 @@ class Datos:
         return stems
         """
         return eng
+
+class Tf_Idf:
+    def __init__(self,documents):
+        self.vector = []
+
+    def generar_TF_IDF(self,texto):
+        vectorizer = TfidfVectorizer()
+        self.vector = vectorizer.fit_transform(texto)
+
