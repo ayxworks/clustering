@@ -102,8 +102,11 @@ class Datos:
 class Tf_Idf:
     def __init__(self,documents):
         self.vector = []
+        self.vectorizer = TfidfVectorizer()
 
-    def generar_TF_IDF(self,texto):
-        vectorizer = TfidfVectorizer()
-        self.vector = vectorizer.fit_transform(texto)
+    def generar_vector_de_un_texto(self,texto):
+        vector = self.vectorizer.fit_transform(texto)
+        return vector
 
+    def generar_TF_IDF(self, docs):
+        self.vector = self.vectorizer.fit_transform(docs)
