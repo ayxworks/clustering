@@ -198,6 +198,7 @@ def escanear_docs(directorio):
             documentos.append(un_articulo)  #!TODO falla aqui no se añade nada
 
         print("Se ha terminado de examinar el fichero:", fichero)
+    print(documentos.pop().palabras.cuerpo)
     return documentos
 
 def preprocesar():
@@ -205,14 +206,16 @@ def preprocesar():
     print('\nGenerando los vectores de las instancias')
     documentos = escanear_docs(directorio)
     #anadir todas las palabras de cada titulo y articulo en una estructura que tf_idf pueda leer
-    #!TODO
-    texto_dicc= set()
+    #!TODO parece que no hay nada en documentos revisar
+    texto_dicc = set()
     print("------------------------------------------------------------")
     #generar un diccionario de palabrtas que no se repiten (nuestro vocabulario)
     for articulo in documentos:
         for palabras in articulo.palabras.titulo:
+            print(palabras)
             texto_dicc.add(palabras)
         for palabras in articulo.palabras.cuerpo:
+            print(palabras)
             texto_dicc.add(palabras)
     print('Preproceso completado!')
     print(texto_dicc)
