@@ -37,18 +37,22 @@ class Datos:
         self.temas = []
         self.sitios = []
         self.palabras = ListaDicc()
-        self.asignarDescripcionArticulo(articulo)
+        self.asignarTemaArticulo(articulo)
+        self.asignarLugarArticulo(articulo)
 
     ### funciones ###
-    def asignarDescripcionArticulo(self, articulo):
-        """ funcion que asugna la descripcion del articulo """
-        for tema in articulo.topics.children:
+    def asignarTemaArticulo(self, articulo):
+        """ funcion que asugna la etiqueta tema del articulo """
+        for tema in articulo.find_all("topics"):
             un_tema = tema.text.encode('utf-8', 'ignore')
             self.temas.append(un_tema)
             Datos.etiquetas_temas_sitios.add(un_tema)
-        for sitios in articulo.places.children:
+
+    def asignarLugarArticulo(self, articulo):
+        """ funcion que asugna la etiqueta lugar del articulo """
+        for sitios in articulo.find_all("places"):
             un_lugar = sitios.text.encode('utf-8', 'ignore')
-            self.temas.append(un_lugar)
+            self.sitios.append(un_lugar)
             Datos.etiquetas_temas_sitios.add(un_lugar)
 
     def aumentar_lista_dicc(self, articulo):
@@ -126,13 +130,10 @@ def escanear_docs(directorio):
     documentos = []
     for fichero in os.listdir(directorio):
         # abrir los archivos 'xxx.sgm' de un directorio
-        docs = open( os.path.join(directorio, fichero) , 'r')
+        docs = open(os.path.join(directorio, fichero), 'r')
         texto = docs.read()
-        sin_num = texto.translate(string.digits)
-        sin_punt = sin_num.translate(string.punctuation)
         docs.close()
-        bsoup = scrap_texto(sin_punt.lower())
-
+        bsoup = scrap_texto(texto.lower())
         for reuter in bsoup.find_all("reuters"):
             articulo = Datos(reuter)
             pares[articulo] = reuter
