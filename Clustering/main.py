@@ -9,7 +9,7 @@ def main(argv):
 
     print('1.2: TF-IDF')
     claseTFIDF = preproceso.Tf_Idf()
-    claseTFIDF.vector = preproceso.Tf_Idf.generar_TF_IDF(documentos)
+    claseTFIDF.vector = preproceso.Tf_Idf.generar_TF_IDF(claseTFIDF, documentos)
 
     print('\nStep 3: Clustering')
     #clustering.begin(fv)

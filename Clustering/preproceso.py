@@ -20,6 +20,9 @@ from sklearn.feature_extraction.text import CountVectorizer          #For Bag of
 from sklearn.feature_extraction.text import TfidfVectorizer          #For TF-IDF
 #from gensim.models import Word2Vec                                   #For Word2Vec
 
+nltk.download('punkt')
+#nltk.download('popular')
+
 ### clases ###
 class ListaDicc:
     def __init__(self):
@@ -39,11 +42,11 @@ class Datos:
     ### funciones ###
     def asignarDescripcionArticulo(self, articulo):
         """ funcion que asugna la descripcion del articulo """
-        for tema in articulo.temas.children:
+        for tema in articulo.topics.children:
             un_tema = tema.text.encode('utf-8', 'ignore')
             self.temas.append(un_tema)
             Datos.etiquetas_temas_sitios.add(un_tema)
-        for sitios in articulo.sitios.children:
+        for sitios in articulo.places.children:
             un_lugar = sitios.text.encode('utf-8', 'ignore')
             self.temas.append(un_lugar)
             Datos.etiquetas_temas_sitios.add(un_lugar)
@@ -53,19 +56,23 @@ class Datos:
         texto = articulo.find('text')
         titulo = texto.title
         cuerpo = texto.body
+        boolEtiqueta = False
         if titulo != None:
-            self.palabras.title = self.tokenizacion(titulo.text)
+            self.palabras.title = self.tokenizacion(titulo.text, boolEtiqueta)
         if cuerpo != None:
-            self.palabras.body = self.tokenizacion(cuerpo.text)
+            self.palabras.body = self.tokenizacion(cuerpo.text, boolEtiqueta)
 
-    def tokenizacion(self, text, bool_etiquetas):
+    def tokenizacion(self, texto, bool_etiquetas = False):
         """ crea la lista de palabras que analizaremos  """
-        utf = text.encode('utf-8', 'ignore')
         # quita digitos y puntuacion
-        sin_digitos = utf.translate(None, string.digits)
-        sin_puntuacion = sin_digitos.translate(None, string.punctuation)
+        sin_num = texto.translate(string.digits)
+        sin_punt = sin_num.translate(string.punctuation)
+        """pruebas no funciona con lo de abajo"""
+        #text = texto.encode("utf8").translate(None, string.digits).decode("utf8")
+        #sin_puntuacion = text.encode("utf8").translate(None, string.punctuation).decode("utf8")
+
         # separar el texto en tokens
-        tokens = nltk.word_tokenize(sin_puntuacion)
+        tokens = nltk.word_tokenize(sin_punt)
         # quitar si el usuario quiere la 'clase'/etiquetas/temas, stop words y palabras que no sean en ingles
         sin_stop = [w for w in tokens if not w in stopwords.words('english')]
         if bool_etiquetas:
@@ -96,7 +103,7 @@ class Datos:
 
 class Tf_Idf:
 
-    def __init__(self,documents):
+    def __init__(self):
         self.vector = []
 
     def generar_vector_de_un_texto(self,texto):
@@ -121,21 +128,23 @@ def escanear_docs(directorio):
         # abrir los archivos 'xxx.sgm' de un directorio
         docs = open( os.path.join(directorio, fichero) , 'r')
         texto = docs.read()
+        sin_num = texto.translate(string.digits)
+        sin_punt = sin_num.translate(string.punctuation)
         docs.close()
-        bsoup = scrap_texto(texto.lower())
+        bsoup = scrap_texto(sin_punt.lower())
 
         for reuter in bsoup.find_all("reuters"):
             articulo = Datos(reuter)
             pares[articulo] = reuter
 
-        for document, reuter in pares.iteritems():
+        for document, reuter in pares.items():
             document.aumentar_lista_dicc(reuter)
             documentos.append(document)
         print ("Se ha terminado de examinar el fichero:", fichero)
     return documentos
 
 def preprocesar():
-    directorio = '..\clustering\reuters21578'
+    directorio = 'datos'
     print('\nGenerando los vectores de las instancias')
     documentos = escanear_docs(directorio)
     # generate lexicon of unique words for feature reduction
