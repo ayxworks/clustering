@@ -138,11 +138,10 @@ def escanear_docs(directorio):
             articulo = Datos(reuter)
             pares[articulo] = reuter
 
-        for document, reuter in pares.items():
-            document.aumentar_lista_dicc(reuter)
-            #falla aqui!
-            documentos.append(document.palabras.titulo.pop())
-            documentos.append(document.palabras.cuerpo.pop())
+        for un_articulo, reuter in pares.items():
+            un_articulo.aumentar_lista_dicc(reuter)
+            documentos.append(un_articulo)
+
         print("Se ha terminado de examinar el fichero:", fichero)
     return documentos
 
@@ -150,6 +149,8 @@ def preprocesar():
     directorio = 'datos'
     print('\nGenerando los vectores de las instancias')
     documentos = escanear_docs(directorio)
+    #anadir todas las palabras de cada titulo y articulo en una estructura que tf_idf pueda leer
+    #!TODO
     # generate lexicon of unique words for feature reduction
     print('Feature vector generation complete. Preprocessing phase complete!')
     return documentos
