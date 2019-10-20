@@ -105,20 +105,75 @@ class Datos:
         """
         return eng
 
+fichero_datos_vectores = ['datasets/dataset1.csv', 'datasets/dataset2.csv']
+
 class Tf_Idf:
-
-    def __init__(self):
+    def __init__(self, texto):
         self.vector = []
+        self.tabla = dict([])
+        self.generar_pesos(texto)
 
-    def generar_vector_de_un_texto(self,texto):
-        vectorizer = TfidfVectorizer()
-        vector = self.vectorizer.fit_transform(texto)
-        return vector
+    def generar_pesos(self, texto):
+        palabras, pesos = self.generar_TF_IDF(texto)
+        array_de_pesos = pesos.toarray()
+        for doc, row in enumerate(array_de_pesos):
+            self.tabla[doc] = dict([])
+            for i, palabra in enumerate(palabras):
+                self.tabla[doc][palabra] = array_de_pesos[doc][i]
 
     def generar_TF_IDF(self, docs):
-        vectorizer = TfidfVectorizer()
-        self.vector = vectorizer.fit_transform(docs)
+        palabras_dicc = dict([])
+        for i, doc in enumerate(docs):
+            palabras_dicc[i] = ' '.join(doc.words.title + doc.words.body)
+        tfidf = TfidfVectorizer()
+        pesos = tfidf.fit_transform(palabras_dicc.values())
+        atributos = tfidf.get_feature_names()
+        return atributos, pesos
 
+"""
+    def crear_dataset(self, docs, vocabulario):
+
+        print 'Generando vector de atributos y dataset...'
+        pesos = self.generar_pesos(docs)
+        # generate feature list
+        print('Selecting features for the feature vectors...')
+        selector = FeatureSelector(pesos.tabla, docs)
+        # write feature vectors to csv files
+        for i, feature in enumerate(selector.features):
+            print 'Writing feature vector data @', datafile[i]
+            __generate_csv(fichero_datos_vectores[i], selector.features[i], selector.feature_vectors[i])
+            print 'Finished generating dataset @', datafile[i]
+        return selector.feature_vectors
+
+    def __generate_csv(file, features, feature_vectors):
+        # crea un csv con los vectores y las 'clases'/etiquetas
+        # generate path if necessary
+        path = os.path.join(os.getcwd(), 'datasets')
+        if not os.path.isdir(path):
+            os.makedirs(path)
+        dataset_fichero_csv = open(file, "w")
+        dataset_fichero_csv.write('id\t')
+        for feature in features:
+            dataset_fichero_csv.write(feature)
+            dataset_fichero_csv.write('\t')
+        dataset_fichero_csv.write('class-label:topics\t')
+        dataset_fichero_csv.write('class-label:places\t')
+        dataset_fichero_csv.write('\n')
+        # feature vector for each document
+        for i, feature_vector in feature_vectors.iteritems():
+            # document id number
+            dataset_fichero_csv.write(str(i))
+            dataset_fichero_csv.write('\t')
+            # each tf-idf score
+            for score in feature_vector.vector:
+                dataset_fichero_csv.write(str(score))
+                dataset_fichero_csv.write('\t')
+            # generate topic/places in fv
+            dataset_fichero_csv.write(str(feature_vector.topics))
+            dataset_fichero_csv.write(str(feature_vector.places))
+            dataset_fichero_csv.write('\n')
+        dataset_fichero_csv.close()
+"""
 #######################################################################
 #            funciones del preproceso, cargar los archivos            #
 #######################################################################
@@ -140,7 +195,7 @@ def escanear_docs(directorio):
 
         for un_articulo, reuter in pares.items():
             un_articulo.aumentar_lista_dicc(reuter)
-            documentos.append(un_articulo)
+            documentos.append(un_articulo)  #!TODO falla aqui no se añade nada
 
         print("Se ha terminado de examinar el fichero:", fichero)
     return documentos
@@ -151,6 +206,14 @@ def preprocesar():
     documentos = escanear_docs(directorio)
     #anadir todas las palabras de cada titulo y articulo en una estructura que tf_idf pueda leer
     #!TODO
-    # generate lexicon of unique words for feature reduction
-    print('Feature vector generation complete. Preprocessing phase complete!')
-    return documentos
+    texto_dicc= set()
+    print("------------------------------------------------------------")
+    #generar un diccionario de palabrtas que no se repiten (nuestro vocabulario)
+    for articulo in documentos:
+        for palabras in articulo.palabras.titulo:
+            texto_dicc.add(palabras)
+        for palabras in articulo.palabras.cuerpo:
+            texto_dicc.add(palabras)
+    print('Preproceso completado!')
+    print(texto_dicc)
+    return Tf_Idf(texto_dicc)
