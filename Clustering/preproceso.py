@@ -193,12 +193,10 @@ def escanear_docs(directorio):
             articulo = Datos(reuter)
             pares[articulo] = reuter
 
-        for un_articulo, reuter in pares.items():
-            un_articulo.aumentar_lista_dicc(reuter)
-            documentos.append(un_articulo)  #!TODO falla aqui no se añade nada
-
+        for articulo, reuter in pares.items():
+            articulo.aumentar_lista_dicc(reuter)
+            documentos.append(articulo)  #!TODO falla aqui, no entiendo por que se anaden cosas
         print("Se ha terminado de examinar el fichero:", fichero)
-    print(documentos.pop().palabras.cuerpo)
     return documentos
 
 def preprocesar():
@@ -206,11 +204,12 @@ def preprocesar():
     print('\nGenerando los vectores de las instancias')
     documentos = escanear_docs(directorio)
     #anadir todas las palabras de cada titulo y articulo en una estructura que tf_idf pueda leer
-    #!TODO parece que no hay nada en documentos revisar
+    #!TODO parece que no hay nada en documentos revisar, hay 1000 articulos y los detecta con len pero no consigo sacar las palabras
     texto_dicc = set()
     print("------------------------------------------------------------")
     #generar un diccionario de palabrtas que no se repiten (nuestro vocabulario)
     for articulo in documentos:
+        print(articulo)
         for palabras in articulo.palabras.titulo:
             print(palabras)
             texto_dicc.add(palabras)
