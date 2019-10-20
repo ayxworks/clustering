@@ -23,6 +23,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer          #For TF-IDF
 nltk.download('punkt')
 #nltk.download('popular')
 
+todas_las_palabras = set()
+
 ### clases ###
 class ListaDicc:
     def __init__(self):
@@ -63,8 +65,12 @@ class Datos:
         boolEtiqueta = False
         if titulo != None:
             self.palabras.title = self.tokenizacion(titulo.text, boolEtiqueta)
+            for p in self.palabras.title:
+                todas_las_palabras.add(p)
         if cuerpo != None:
             self.palabras.body = self.tokenizacion(cuerpo.text, boolEtiqueta)
+            for p in self.palabras.body:
+                todas_las_palabras.add(p)
 
     def tokenizacion(self, texto, bool_etiquetas = False):
         """ crea la lista de palabras que analizaremos  """
@@ -123,10 +129,13 @@ class Tf_Idf:
 
     def generar_TF_IDF(self, docs):
         palabras_dicc = dict([])
+        """cuando se arrelge
         for i, doc in enumerate(docs):
-            palabras_dicc[i] = ' '.join(doc.words.title + doc.words.body)
+            palabras_dicc[i] = ' '.join(doc.palabras.titulo + doc.palabras.cuerpo)
+        """
         tfidf = TfidfVectorizer()
-        pesos = tfidf.fit_transform(palabras_dicc.values())
+        #pesos = tfidf.fit_transform(palabras_dicc.values())
+        pesos = tfidf.fit_transform(docs)
         atributos = tfidf.get_feature_names()
         return atributos, pesos
 
@@ -207,15 +216,27 @@ def preprocesar():
     #!TODO parece que no hay nada en documentos revisar, hay 1000 articulos y los detecta con len pero no consigo sacar las palabras
     texto_dicc = set()
     print("------------------------------------------------------------")
+
+    if not documentos:
+        print("no hay articulos")
+
     #generar un diccionario de palabrtas que no se repiten (nuestro vocabulario)
     for articulo in documentos:
-        print(articulo)
-        for palabras in articulo.palabras.titulo:
-            print(palabras)
-            texto_dicc.add(palabras)
-        for palabras in articulo.palabras.cuerpo:
-            print(palabras)
-            texto_dicc.add(palabras)
+        if not articulo:
+            print("no hay parrafo")
+        for words in articulo.palabras.titulo:
+            if not words:
+                print("no hay titulos")
+            print(words.titulo)
+            print(words)
+            texto_dicc.add(words)
+        for words in articulo.palabras.cuerpo:
+            if not words:
+                print("no hay cuerpos")
+            print(words)
+            texto_dicc.add(words)
     print('Preproceso completado!')
     print(texto_dicc)
-    return Tf_Idf(texto_dicc)
+    # cuando lo arregle return Tf_Idf(texto_dicc)
+    print(todas_las_palabras)
+    return Tf_Idf(todas_las_palabras)

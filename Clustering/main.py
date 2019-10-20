@@ -6,7 +6,7 @@ def main(argv):
     comienzo = time.time()
     print('1: Preprocessing')
     documentos = preproceso.preprocesar()
-    print (documentos)
+    print(documentos)
 
     print('2: Clustering')
     #clustering.begin(fv)
