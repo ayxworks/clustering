@@ -140,8 +140,10 @@ def escanear_docs(directorio):
 
         for document, reuter in pares.items():
             document.aumentar_lista_dicc(reuter)
-            documentos.append(document)
-        print ("Se ha terminado de examinar el fichero:", fichero)
+            #falla aqui!
+            documentos.append(document.palabras.titulo.pop())
+            documentos.append(document.palabras.cuerpo.pop())
+        print("Se ha terminado de examinar el fichero:", fichero)
     return documentos
 
 def preprocesar():
