@@ -10,7 +10,7 @@ string: para trabajr con el texto y encoding
 import os
 import nltk
 import string
-
+from bs4 import BeautifulSoup
 from nltk.corpus import wordnet
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
@@ -34,13 +34,11 @@ class Datos:
         self.temas = []
         self.sitios = []
         self.palabras = ListaDicc()
-
         self.asignarDescripcionArticulo(articulo)
 
     ### funciones ###
     def asignarDescripcionArticulo(self, articulo):
-        """ funcion que asugna la descripcion del articulo
-        """
+        """ funcion que asugna la descripcion del articulo """
         for tema in articulo.temas.children:
             un_tema = tema.text.encode('utf-8', 'ignore')
             self.temas.append(un_tema)
@@ -51,8 +49,7 @@ class Datos:
             Datos.etiquetas_temas_sitios.add(un_lugar)
 
     def aumentar_lista_dicc(self, articulo):
-        """ crea una lista de tokens de las palabras del titulo/cuerpo
-        """
+        """ crea una lista de tokens de las palabras del titulo/cuerpo """
         texto = articulo.find('text')
         titulo = texto.title
         cuerpo = texto.body
@@ -62,9 +59,7 @@ class Datos:
             self.palabras.body = self.tokenizacion(cuerpo.text)
 
     def tokenizacion(self, text, bool_etiquetas):
-        """ crea la lista de palabras que analizaremos
-            :returns: lista de tokens filtrados y generizados
-        """
+        """ crea la lista de palabras que analizaremos  """
         utf = text.encode('utf-8', 'ignore')
         # quita digitos y puntuacion
         sin_digitos = utf.translate(None, string.digits)
@@ -100,13 +95,49 @@ class Datos:
         return eng
 
 class Tf_Idf:
+
     def __init__(self,documents):
         self.vector = []
-        self.vectorizer = TfidfVectorizer()
 
     def generar_vector_de_un_texto(self,texto):
+        vectorizer = TfidfVectorizer()
         vector = self.vectorizer.fit_transform(texto)
         return vector
 
     def generar_TF_IDF(self, docs):
-        self.vector = self.vectorizer.fit_transform(docs)
+        vectorizer = TfidfVectorizer()
+        self.vector = vectorizer.fit_transform(docs)
+
+#######################################################################
+#            funciones del preproceso, cargar los archivos            #
+#######################################################################
+def scrap_texto(texto_plano):
+    return BeautifulSoup(texto_plano, "html.parser")
+
+def escanear_docs(directorio):
+    pares = dict([])
+    documentos = []
+    for fichero in os.listdir(directorio):
+        # abrir los archivos 'xxx.sgm' de un directorio
+        docs = open( os.path.join(directorio, fichero) , 'r')
+        texto = docs.read()
+        docs.close()
+        bsoup = scrap_texto(texto.lower())
+
+        for reuter in bsoup.find_all("reuters"):
+            articulo = Datos(reuter)
+            pares[articulo] = reuter
+
+        for document, reuter in pares.iteritems():
+            document.aumentar_lista_dicc(reuter)
+            documentos.append(document)
+        print ("Se ha terminado de examinar el fichero:", fichero)
+    return documentos
+
+def preprocesar():
+    directorio = '..\clustering\reuters21578'
+    print('\nGenerando los vectores de las instancias')
+    documentos = escanear_docs(directorio)
+    # generate lexicon of unique words for feature reduction
+    print('Feature vector generation complete. Preprocessing phase complete!')
+    return documentos
