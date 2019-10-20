@@ -5,7 +5,7 @@ Created on Fri Oct 18 11:00:38 2019
 @author: StromValhalla
 """
 
-def minimaDistancia (centroides):
+def minimaDistancia(centroides):
     distMin = 99999
     i = 1
     j=0
@@ -45,7 +45,7 @@ def distManhattan(centr1, centr2):
     pre: Una lista no vacia de tuplas numericas
     post: Devuelve el centroide de esos vectores
 """
-def calcularCentro (lista):
+def calcularCentro(lista):
     centro = []
     i=0
     x=0
@@ -59,3 +59,8 @@ def calcularCentro (lista):
     
     centro = tuple(centro)
     return centro
+
+
+def generarLista(num):
+    l = [0] * num
+    return l
