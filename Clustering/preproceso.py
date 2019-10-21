@@ -113,6 +113,8 @@ class Tf_Idf:
         self.vector = []
         self.atributos = []
         self.tabla = dict([])
+
+        self.generar_TF_IDF(texto)
     """
         self.generar_pesos(texto)
 
@@ -234,5 +236,4 @@ def preprocesar():
     print('Preproceso completado!')
     print(texto_dicc)
     tfidf = Tf_Idf(documentos)
-    tfidf.generar_TF_IDF(documentos)
     return tfidf
