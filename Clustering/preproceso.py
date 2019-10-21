@@ -23,8 +23,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer          #For TF-IDF
 nltk.download('punkt')
 #nltk.download('popular')
 
-todas_las_palabras = set()
-
 ### clases ###
 class ListaDicc:
     def __init__(self):
@@ -64,13 +62,10 @@ class Datos:
         cuerpo = texto.body
         boolEtiqueta = False
         if titulo != None:
-            self.palabras.title = self.tokenizacion(titulo.text, boolEtiqueta)
-            for p in self.palabras.title:
-                todas_las_palabras.add(p)
+            self.palabras.titulo = self.tokenizacion(titulo.text, boolEtiqueta)
         if cuerpo != None:
-            self.palabras.body = self.tokenizacion(cuerpo.text, boolEtiqueta)
-            for p in self.palabras.body:
-                todas_las_palabras.add(p)
+            self.palabras.cuerpo = self.tokenizacion(cuerpo.text, boolEtiqueta)
+
 
     def tokenizacion(self, texto, bool_etiquetas = False):
         """ crea la lista de palabras que analizaremos  """
@@ -116,6 +111,7 @@ fichero_datos_vectores = ['datasets/dataset1.csv', 'datasets/dataset2.csv']
 class Tf_Idf:
     def __init__(self, texto):
         self.vector = []
+        self.atributos = []
         self.tabla = dict([])
     """
         self.generar_pesos(texto)
@@ -127,13 +123,9 @@ class Tf_Idf:
             self.tabla[doc] = dict([])
             for i, palabra in enumerate(palabras):
                 self.tabla[doc][palabra] = array_de_pesos[doc][i]
-    def generar_TF_IDF(self, docs):"""
+    def generar_TF_IDF(self, docs):
     def generar_TF_IDF(docs):
         palabras_dicc = dict([])
-        """cuando se arrelge
-        for i, doc in enumerate(docs):
-            palabras_dicc[i] = ' '.join(doc.palabras.titulo + doc.palabras.cuerpo)
-        """
         tfidf = TfidfVectorizer()
         #pesos = tfidf.fit_transform(palabras_dicc.values())
         pesos = tfidf.fit_transform(docs)
@@ -141,6 +133,17 @@ class Tf_Idf:
         print(pesos)
         print("aaaaaaaaaaaaaaaaaaaaaaaaaaa")
         atributos = tfidf.get_feature_names()
+        return atributos, pesos
+    """
+    def generar_TF_IDF(self, docs):
+        palabras_dicc = dict([])
+        for i, doc in enumerate(docs):
+            palabras_dicc[i] = ' '.join(doc.palabras.titulo + doc.palabras.cuerpo)
+        tfidf = TfidfVectorizer()
+        pesos = tfidf.fit_transform(palabras_dicc.values())
+        self.vector = pesos
+        atributos = tfidf.get_feature_names()
+        self.atributos = atributos
         return atributos, pesos
 
 """
@@ -220,27 +223,16 @@ def preprocesar():
     #!TODO parece que no hay nada en documentos revisar, hay 1000 articulos y los detecta con len pero no consigo sacar las palabras
     texto_dicc = set()
     print("------------------------------------------------------------")
-
-    if not documentos:
-        print("no hay articulos")
-
     #generar un diccionario de palabrtas que no se repiten (nuestro vocabulario)
+    """
     for articulo in documentos:
-        if not articulo:
-            print("no hay parrafo")
         for words in articulo.palabras.titulo:
-            if not words:
-                print("no hay titulos")
-            print(words.titulo)
-            print(words)
             texto_dicc.add(words)
         for words in articulo.palabras.cuerpo:
-            if not words:
-                print("no hay cuerpos")
-            print(words)
             texto_dicc.add(words)
+    """
     print('Preproceso completado!')
     print(texto_dicc)
-    # cuando lo arregle return Tf_Idf(texto_dicc)
-    print(todas_las_palabras)
-    return Tf_Idf.generar_TF_IDF(todas_las_palabras)
+    tfidf = Tf_Idf(documentos)
+    tfidf.generar_TF_IDF(documentos)
+    return tfidf
