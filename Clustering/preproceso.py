@@ -115,28 +115,16 @@ class Tf_Idf:
         self.tabla = dict([])
 
         self.generar_TF_IDF(texto)
-    """
         self.generar_pesos(texto)
 
     def generar_pesos(self, texto):
         palabras, pesos = self.generar_TF_IDF(texto)
         array_de_pesos = pesos.toarray()
-        for doc, row in enumerate(array_de_pesos):
-            self.tabla[doc] = dict([])
-            for i, palabra in enumerate(palabras):
-                self.tabla[doc][palabra] = array_de_pesos[doc][i]
-    def generar_TF_IDF(self, docs):
-    def generar_TF_IDF(docs):
-        palabras_dicc = dict([])
-        tfidf = TfidfVectorizer()
-        #pesos = tfidf.fit_transform(palabras_dicc.values())
-        pesos = tfidf.fit_transform(docs)
-        print("aaaaaaaaaaaaaaaaaaaaaaaaaaa")
-        print(pesos)
-        print("aaaaaaaaaaaaaaaaaaaaaaaaaaa")
-        atributos = tfidf.get_feature_names()
-        return atributos, pesos
-    """
+        for iDoc in range(len(array_de_pesos)):
+            self.tabla[iDoc] = dict([])
+            for j, palabra in enumerate(palabras):
+                self.tabla[iDoc][palabra] = array_de_pesos[iDoc][j]
+
     def generar_TF_IDF(self, docs):
         palabras_dicc = dict([])
         for i, doc in enumerate(docs):
