@@ -12,20 +12,20 @@ def main(argv):
     #print(documentos.tabla)
 
     tiempo = time.time() - comienzo
-    tiempo = time.strftime("%M:%S", time.gmtime(tiempo))
+    tiempo = time.strftime("%H:%M:%S", time.gmtime(tiempo))
     print ('Ha tardado en preprocesar ', tiempo, 'segundos!')
     ##########################################################################################
     print('2: Clustering')
     #clustering.begin(fv)
 
     tiempo = time.time() - comienzo
-    tiempo = time.strftime("%M:%S", time.gmtime(tiempo))
+    tiempo = time.strftime("%H:%M:%S", time.gmtime(tiempo))
     print ('Ha tardado en hacer el cluster jerarquico ', tiempo, 'segundos!')
     ##########################################################################################
 
 
     tiempo = time.time() - comienzo
-    tiempo = time.strftime("%M:%S", time.gmtime(tiempo))
+    tiempo = time.strftime("%H:%M:%S", time.gmtime(tiempo))
     print ('Ha tardado en evaluar ', tiempo, 'segundos!')
 if __name__ == '__main__':
     main(sys.argv[1:])
