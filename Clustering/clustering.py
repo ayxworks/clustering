@@ -33,10 +33,13 @@ class Cluster:
         while len(self.clust.keys()) != 1:
             centroides = {} 
             
+            print(iteracion)
+            
             for each in self.clust.keys():
                 centroide = ut.calcularCentro(self.clust[each])
                 centroides[each] = centroide
-
+            
+            print("Centroides calculados")
             cl1, cl2, dist = ut.minimaDistancia(centroides)
             
     
@@ -65,12 +68,17 @@ class Cluster:
             pickle.dump(self.dist, res)
 
 
-cl = Cluster([(1,3),(1,4),(2,2),(5,2),(5,1),(7,2)])
+with open('resultados\datosAL.txt', "rb") as fp:  
+    clust = pickle.load(fp)
+
+cl = Cluster(clust)
 
 cl.clustering() 
-print(cl.dist)
+print(cl.dist.keys())
 
 cl.guardar('resultados\dist.txt')
+
+
 
 
 

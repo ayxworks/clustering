@@ -4,7 +4,8 @@ Created on Sat Oct 19 17:59:51 2019
 
 @author: StromValhalla
 """
-from sklearn.metrics import silhouette_score
+from sklearn.metrics import davies_bouldin_score
+from sklearn.metrics import calinski_harabasz_score
 import util as ut
 import pickle
 
@@ -18,8 +19,8 @@ class Evaluador:
             if i != 0 and i != len(res.keys())-1:
                 agrup = res[each]
                 labels = self.listaClusters(instancias, agrup, labels)
-                sil = self.silhouette(instancias, labels, dist)
-                print('Agrupaciones: {}   Silhouette: {}' .format(len(agrup.keys()), sil))
+                sil = self.calinskiHarabasz(instancias, labels)
+                print('Agrupaciones: {}   Score: {}' .format(len(agrup.keys()), sil))
             
             i+=1
             
@@ -40,9 +41,15 @@ class Evaluador:
         
         
     
-    def silhouette(self, inst, labels, metric):
-        silhouette_avg = silhouette_score(inst, labels, metric=metric)
-        return silhouette_avg
+    def daviesBouldin(self, inst, labels):
+        score = davies_bouldin_score(inst, labels)
+        return score
+    
+    
+    
+    def calinskiHarabasz(self, inst, labels):
+        score = calinski_harabasz_score(inst, labels)
+        return score
     
     
     

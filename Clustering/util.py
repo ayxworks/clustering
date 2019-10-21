@@ -10,21 +10,25 @@ def minimaDistancia(centroides):
     i = 1
     j=0
     solucion=()
-
+            
     for cent1 in centroides.keys():
         if i==len(centroides):
             "print(solucion)"
             return solucion
         else:
             for cent2 in centroides.keys():
-                if j>0:
-                    if cent1 != cent2:
-                        distAct = distManhattan(centroides[cent1],centroides[cent2])
-                        if distAct<distMin:
-                            distMin=distAct
-                            solucion = (cent1,cent2,distMin)
-                j+=1
+                if j==i:
+                   distAct = distManhattan(centroides[cent1],centroides[cent2])
+                   if distAct<distMin:
+                       distMin=distAct
+                       solucion = (cent1,cent2,distMin)
+                       
+                else: j+=1
+                
             i+=1
+            j=0
+                    
+            
 
 """
     Calcula la distancia manhattan entre dos centroides.
