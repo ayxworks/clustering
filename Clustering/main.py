@@ -7,7 +7,7 @@ def main(argv):
     ##########################################################################################
     print('1: Preprocessing')
     documentos = preproceso.preprocesar()
-    print(documentos.vector)
+    print(documentos.vector[988])
     #print(documentos.atributos)
     #print(documentos.tabla)
 
