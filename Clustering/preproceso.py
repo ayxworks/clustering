@@ -129,7 +129,7 @@ class Tf_Idf:
             doc = list()
             for i, palabra in enumerate(fila):
                 doc.append(matriz_completa[articulo][i])
-            self.vDocs[articulo] = tuple(doc)
+            self.vDocs.append(tuple(doc))
         print("Lista de tuplas de vectores tf-idf generada")
 
     def generar_vocab_npalabras(self, docs):

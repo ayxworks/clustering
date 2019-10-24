@@ -12,11 +12,7 @@ def main(argv):
     #print(documentos.atributos)
     #print(documentos.tabla)
     #documentos.print_tabla()
-    print(documentos.vDocs[0])
-    print(" -------------")
-    print(documentos.vector[0])
-    print(" -------------")
-    print(documentos.vector[0].toarray())
+    print(documentos.vDocs[0]) #lista de tuplas(/vectores)
 
     tiempo = time.time() - comienzo
     tiempo = time.strftime("%H:%M:%S", time.gmtime(tiempo))
