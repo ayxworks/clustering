@@ -49,13 +49,17 @@ def distManhattan(centr1, centr2):
     pre: Una lista no vacia de tuplas numericas
     post: Devuelve el centroide de esos vectores
 """
-def calcularCentro(lista):
+def calcularCentro(lista, vectores):
     centro = []
     i=0
     x=0
     
-    while i<len(lista[0]):
-        for each in lista: x+=each[i]
+    while i<len(vectores[0]):
+        for each in lista: 
+            vector = vectores[each]
+            x+=vector[i]
+            
+            
         x=x/len(lista)
         centro.append(x)
         x=0

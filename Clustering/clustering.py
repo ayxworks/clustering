@@ -46,8 +46,8 @@ class Cluster:
             del centroides[cl2]
             
             self.clust[cl1] = vector1 + vector2
-            vectores = self.sacarVetores(self.clust[cl1])
-            centroides[cl1] = ut.calcularCentro(vectores)
+            "vectores = self.sacarVetores(self.clust[cl1], self.vect)"
+            centroides[cl1] = ut.calcularCentro(self.clust[cl1], self.vect)
             
             self.dist[dist] = copy(self.clust)
             
@@ -62,20 +62,20 @@ class Cluster:
         centroides = {} 
         
         for each in self.clust.keys():
-            vectores = self.sacarVetores(self.clust[each])
-            centroide = ut.calcularCentro(vectores)
+            "vectores = self.sacarVetores(self.clust[each], self.vect)"
+            centroide = ut.calcularCentro(self.clust[each], self.vect)
             centroides[each] = centroide
             
         return centroides
     
     
     
-    def sacarVetores(self, lista):
+    """def sacarVetores(self, lista, vect):
         vectores = []
         for num in lista:
-            vectores.append(self.vect[num])
+            vectores.append(vect[num])
         
-        return vectores
+        return vectores"""
     
     
     def guardarIteracion(self, it, dist, clust):
@@ -85,6 +85,8 @@ class Cluster:
         string += '\n' 
         with open('resultados\iteraciones.txt', "a") as res: res.write(string)
         
+        res.close()
+        
     
     """
     Guarda la estructura jerarquica
@@ -93,7 +95,9 @@ class Cluster:
     """
     def guardar(self, path):
         with open(path, "wb") as res:
-            pickle.dump(self.dist, res)          
+            pickle.dump(self.dist, res)     
+            
+        res.close()
             
 
 
