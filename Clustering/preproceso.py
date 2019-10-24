@@ -10,7 +10,7 @@ string: para trabajr con el texto y encoding
 import os
 import nltk
 import string
-import pandas as pd
+import pandas as pd     #trabajar con tablas/csv
 from bs4 import BeautifulSoup
 from nltk.corpus import wordnet
 from nltk.corpus import stopwords
@@ -19,7 +19,9 @@ from nltk.stem.wordnet import WordNetLemmatizer
 
 from sklearn.feature_extraction.text import CountVectorizer          #For Bag of words
 from sklearn.feature_extraction.text import TfidfVectorizer          #For TF-IDF
+from sklearn.feature_extraction.text import TfidfTransformer
 #from gensim.models import Word2Vec                                   #For Word2Vec
+
 
 nltk.download('punkt')
 nltk.download('stopwords')
@@ -113,13 +115,14 @@ fichero_datos_vectores = ['datasets/dataset1.csv', 'datasets/dataset2.csv']
 
 class Tf_Idf:
     def __init__(self, texto):
-        self.vector = []
+        self.tfidf = TfidfVectorizer(max_df=0.9)
+        self.vector = None
         self.atributos = []
         #self.tabla = dict([])
         self.tfidfvectorizer = TfidfVectorizer(max_df=0.9)
 
-        self.generar_TF_IDF(texto)
-        #self.generar_pesos(texto)
+        self.generar_pesos(texto)
+        self.generar_vocab_npalabras(texto)
 
     def generar_tabla_pesos(self, texto):
         palabras, pesos = self.generar_TF_IDF(texto)
@@ -130,14 +133,13 @@ class Tf_Idf:
                 self.tabla[iDoc][palabra] = array_de_pesos[iDoc][j]
         print("Tabla de atributos x tf_idf generada")
 
-    def generar_TF_IDF(self, docs):
+    def generar_vocab_npalabras(self, docs):
         palabras_dicc = dict([])
         for i, doc in enumerate(docs):
             palabras_dicc[i] = ' '.join(doc.palabras.titulo + doc.palabras.cuerpo)
-        tfidf = self.tfidfvectorizer
-        pesos = tfidf.fit_transform(palabras_dicc.values())
+        pesos = self.tfidf.fit_transform(palabras_dicc.values())
         self.vector = pesos
-        atributos = tfidf.get_feature_names()
+        atributos = self.tfidf.get_feature_names()
         self.atributos = atributos
         print("Espacio vectorial analizado y valores tf_idf calculados")
         return atributos, pesos
@@ -145,50 +147,15 @@ class Tf_Idf:
         df = pd.DataFrame(self.vector[nArt].T.todense(), index=self.tfidfvectorizer.get_feature_names(), columns=["tfidf"])
         df.sort_values(by=["tfidf"],ascending=ascendente)
 
-"""
-    def crear_dataset(self, docs, vocabulario):
+    def print_tabla(self):
+        idf_trans=TfidfTransformer(smooth_idf=True,use_idf=True)
+        idf_trans.fit(self.vector)
+        # print idf values
+        df_idf = pd.DataFrame(idf_trans.idf_, index=self.tfidf.get_feature_names(),columns=["idf_pesos"])
+        
+        # orden ascendente
+        df_idf.sort_values(by=['idf_pesos'])
 
-        print 'Generando vector de atributos y dataset...'
-        pesos = self.generar_pesos(docs)
-        # generate feature list
-        print('Selecting features for the feature vectors...')
-        selector = FeatureSelector(pesos.tabla, docs)
-        # write feature vectors to csv files
-        for i, feature in enumerate(selector.features):
-            print 'Writing feature vector data @', datafile[i]
-            __generate_csv(fichero_datos_vectores[i], selector.features[i], selector.feature_vectors[i])
-            print 'Finished generating dataset @', datafile[i]
-        return selector.feature_vectors
-
-    def __generate_csv(file, features, feature_vectors):
-        # crea un csv con los vectores y las 'clases'/etiquetas
-        # generate path if necessary
-        path = os.path.join(os.getcwd(), 'datasets')
-        if not os.path.isdir(path):
-            os.makedirs(path)
-        dataset_fichero_csv = open(file, "w")
-        dataset_fichero_csv.write('id\t')
-        for feature in features:
-            dataset_fichero_csv.write(feature)
-            dataset_fichero_csv.write('\t')
-        dataset_fichero_csv.write('class-label:topics\t')
-        dataset_fichero_csv.write('class-label:places\t')
-        dataset_fichero_csv.write('\n')
-        # feature vector for each document
-        for i, feature_vector in feature_vectors.iteritems():
-            # document id number
-            dataset_fichero_csv.write(str(i))
-            dataset_fichero_csv.write('\t')
-            # each tf-idf score
-            for score in feature_vector.vector:
-                dataset_fichero_csv.write(str(score))
-                dataset_fichero_csv.write('\t')
-            # generate topic/places in fv
-            dataset_fichero_csv.write(str(feature_vector.topics))
-            dataset_fichero_csv.write(str(feature_vector.places))
-            dataset_fichero_csv.write('\n')
-        dataset_fichero_csv.close()
-"""
 #######################################################################
 #            funciones del preproceso, cargar los archivos            #
 #######################################################################

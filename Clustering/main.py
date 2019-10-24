@@ -4,12 +4,14 @@ import preproceso
 
 def main(argv):
     comienzo = time.time()
+    print('\n')
     ##########################################################################################
     print('1: Preprocessing')
     documentos = preproceso.preprocesar()
-    print(documentos.vector[988])
+    #print(documentos.vector)
     #print(documentos.atributos)
     #print(documentos.tabla)
+    documentos.print_tabla()
 
     tiempo = time.time() - comienzo
     tiempo = time.strftime("%H:%M:%S", time.gmtime(tiempo))
