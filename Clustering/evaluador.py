@@ -15,6 +15,7 @@ class Evaluador:
         res = self.cargar(path)
         labels = ut.generarLista(len(instancias))
         i = 0
+
         for each in res.keys():
             if i != 0 and i != len(res.keys())-1:
                 agrup = res[each]
@@ -33,8 +34,8 @@ class Evaluador:
     def listaClusters(self, inst, agrup, lista):  
         for clust in agrup.keys():
             for each in agrup[clust]:
-                indice = inst.index(each)
-                lista[indice] = clust
+                "indice = inst.index(each)"
+                lista[each] = clust
                 
                 
         return lista
@@ -56,6 +57,8 @@ class Evaluador:
     def cargar(self, path):
         with open(path, "rb") as fp:  
             clust = pickle.load(fp)
+            
+        fp.close()
     
         return clust
         
