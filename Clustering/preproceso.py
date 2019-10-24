@@ -118,20 +118,19 @@ class Tf_Idf:
         self.tfidf = TfidfVectorizer(max_df=0.9)
         self.vector = None
         self.atributos = []
-        #self.tabla = dict([])
-        self.tfidfvectorizer = TfidfVectorizer(max_df=0.9)
+        self.vDocs = []
 
-        self.generar_pesos(texto)
-        self.generar_vocab_npalabras(texto)
+        self.generar_vector_tupla_pesos(texto)
 
-    def generar_tabla_pesos(self, texto):
-        palabras, pesos = self.generar_TF_IDF(texto)
-        array_de_pesos = pesos.toarray()
-        for iDoc in range(len(array_de_pesos)):
-            self.tabla[iDoc] = dict([])
-            for j, palabra in enumerate(palabras):
-                self.tabla[iDoc][palabra] = array_de_pesos[iDoc][j]
-        print("Tabla de atributos x tf_idf generada")
+    def generar_vector_tupla_pesos(self, texto):
+        palabras, pesos = self.generar_vocab_npalabras(texto)
+        matriz_completa = pesos.toarray()
+        for articulo, fila in enumerate(matriz_completa):
+            doc = list()
+            for i, palabra in enumerate(fila):
+                doc.append(matriz_completa[articulo][i])
+            self.vDocs[articulo] = tuple(doc)
+        print("Lista de tuplas de vectores tf-idf generada")
 
     def generar_vocab_npalabras(self, docs):
         palabras_dicc = dict([])
@@ -143,16 +142,12 @@ class Tf_Idf:
         self.atributos = atributos
         print("Espacio vectorial analizado y valores tf_idf calculados")
         return atributos, pesos
-    def print_tabla(self, nArt, ascendente):
-        df = pd.DataFrame(self.vector[nArt].T.todense(), index=self.tfidfvectorizer.get_feature_names(), columns=["tfidf"])
-        df.sort_values(by=["tfidf"],ascending=ascendente)
 
     def print_tabla(self):
         idf_trans=TfidfTransformer(smooth_idf=True,use_idf=True)
         idf_trans.fit(self.vector)
         # print idf values
         df_idf = pd.DataFrame(idf_trans.idf_, index=self.tfidf.get_feature_names(),columns=["idf_pesos"])
-        
         # orden ascendente
         df_idf.sort_values(by=['idf_pesos'])
 
