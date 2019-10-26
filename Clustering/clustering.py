@@ -6,7 +6,6 @@ Created on Wed Oct 16 13:14:33 2019
 """
 import util as ut
 from copy import copy
-import pickle
 
 class Cluster:
     def __init__(self, vectores):
@@ -87,19 +86,7 @@ class Cluster:
         
         res.close()
         
-    
-    """
-    Guarda la estructura jerarquica
-    Pre : El path debe existir
-    Post: El archivo con la estructura de datos guardada
-    """
-    def guardar(self, path):
-        with open(path, "wb") as res:
-            pickle.dump(self.dist, res)     
             
-        res.close()
-            
-
 
 """with open('resultados\datosAL.txt', "rb") as fp:  
     clust = pickle.load(fp)"""
@@ -110,7 +97,7 @@ cl = Cluster([(1,3),(1,4),(2,2),(5,2),(5,1),(7,2)])
 cl.clustering() 
 print(cl.dist.keys())
 
-cl.guardar('resultados\dist.txt')
+ut.guardar('resultados\dist.txt', cl.dist)
 
 
 

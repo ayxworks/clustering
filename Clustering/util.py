@@ -4,6 +4,7 @@ Created on Fri Oct 18 11:00:38 2019
 
 @author: StromValhalla
 """
+import pickle
 
 def minimaDistancia(centroides):
     distMin = 99999
@@ -44,6 +45,7 @@ def distManhattan(centr1, centr2):
     return dist
 
 
+
 """
     Dado una lista de vectores te devuelve su centroide
     pre: Una lista no vacia de tuplas numericas
@@ -67,6 +69,41 @@ def calcularCentro(lista, vectores):
     
     centro = tuple(centro)
     return centro
+
+
+
+def listaClusters(inst, agrup, lista):  
+    for clust in agrup.keys():
+        for each in agrup[clust]:
+            "indice = inst.index(each)"
+            lista[each] = clust
+            
+            
+    return lista
+
+
+
+"""
+Guarda la estructura jerarquica
+Pre : El path debe existir
+Post: El archivo con la estructura de datos guardada
+"""
+def guardar(path, archivo):
+    with open(path, "wb") as res:
+        pickle.dump(archivo, res)     
+        
+    res.close()
+
+
+
+def cargar(path):
+    with open(path, "rb") as fp:  
+        clust = pickle.load(fp)
+        
+    fp.close()
+
+    return clust
+
 
 
 def generarLista(num):
