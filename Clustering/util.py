@@ -6,46 +6,6 @@ Created on Fri Oct 18 11:00:38 2019
 """
 import pickle
 
-def minimaDistancia(centroides):
-    distMin = 99999
-    i = 1
-    j=0
-    solucion=()
-            
-    for cent1 in centroides.keys():
-        if i==len(centroides):
-            "print(solucion)"
-            return solucion
-        else:
-            for cent2 in centroides.keys():
-                if j==i:
-                   distAct = distManhattan(centroides[cent1],centroides[cent2])
-                   if distAct<distMin:
-                       distMin=distAct
-                       solucion = (cent1,cent2,distMin)
-                       
-                else: j+=1
-                
-            i+=1
-            j=0
-                    
-            
-
-"""
-    Calcula la distancia manhattan entre dos centroides.
-    Pre : Coordenadas de dos centroides
-    Post: Distancia Manhattan entre los dos centroides.
-"""
-def distManhattan(centr1, centr2):
-    dist=0
-    i=0
-    while i<len(centr1):
-        dist+= abs(centr1[i]-centr2[i])
-        i+=1
-    return dist
-
-
-
 """
     Dado una lista de vectores te devuelve su centroide
     pre: Una lista no vacia de tuplas numericas
