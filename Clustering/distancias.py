@@ -85,5 +85,4 @@ class Distancias:
             dist+= abs(centr1[i]-centr2[i])
             i+=1
             
-        print((centr1, centr2 , dist))
         return dist

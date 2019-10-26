@@ -38,7 +38,6 @@ class Cluster:
         while len(self.clust.keys()) != 1:
             print(iteracion)
             
-            print(centroides)
             cl1, cl2, dist = distancias.minimaDist()
             
             vector1 = self.clust[cl1]
@@ -86,12 +85,11 @@ class Cluster:
         
             
 
+clust = ut.cargar('resultados\datosAL.txt')
 
-"clust = ut.cargar('resultados\datosAL.txt')"
 
-
-cl = Cluster([(1,3),(1,4),(2,2),(5,2),(5,1),(7,2)])
-"cl = Cluster(clust)"
+"cl = Cluster([(1,3),(1,4),(2,2),(5,2),(5,1),(7,2)])"
+cl = Cluster(clust)
 
 cl.clustering() 
 print(cl.dist.keys())
