@@ -14,18 +14,23 @@ class Evaluador:
         res = ut.cargar(path)
         labels = ut.generarLista(len(instancias))
         i = 0
+        parar = False
+        scoreMax = 0
+        hasta = len(res.keys())*0.9
 
         for each in res.keys():
-            if i != 0 and i != len(res.keys())-1:
+            if i!=0 and i%10==0 and i <= hasta and not parar:
                 agrup = res[each]
                 labels = ut.listaClusters(instancias, agrup, labels)
-                score = self.calinskiHarabasz(instancias, labels)
-                print('Agrupaciones: {}   Score: {}' .format(len(agrup.keys()), score))
-            
+                score = self.daviesBouldin(instancias, labels)
+                self.guardarScore(len(agrup.keys()), score)
+                if score>scoreMax: scoreMax = score
+                elif score<scoreMax: 
+                    parar = True
+                    print(score)
+                
             i+=1
             
-        
-        "Falta por implementar pero he estado probando cosas para ver si funcionaba"
         
         
         
@@ -40,7 +45,16 @@ class Evaluador:
         score = calinski_harabasz_score(inst, labels)
         return score
     
+    
+    def guardarScore(self, num, score):
+        string = ' Agrupaciones: {}   '.format(num)
+        string += 'Score: {}'.format(round(score, 4))
+        string += '\n' 
+        with open('resultados\score.txt', "a") as res: res.write(string)
+        
+        res.close()
         
 
+clust = ut.cargar('resultados\datosAL.txt')
 ev = Evaluador()
-ev.evaluar('resultados\dist.txt', [(1,3),(1,4),(2,2),(5,2),(5,1),(7,2)])
+ev.evaluar('resultados\dist.txt', clust)
