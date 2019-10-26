@@ -19,6 +19,8 @@ class Cluster:
         
         self.dist = {}
         self.dist[0] = copy(self.clust)
+        self.iter = {}
+        self.iter[0] = copy(self.clust)
 
 
 
@@ -28,15 +30,15 @@ class Cluster:
     Post: La estructura jerarquica de la agrupacion
     """
     def clustering (self):
-        iteracion = 0
+        iteracion = 1
         centroides = self.inicializarCentroides()
-        print("Centroides calculados")
+        "print('Centroides calculados')"
         distancias = dis.Distancias()
         distancias.inicializarDist(centroides)
-        print("Distancias calculada")
+        "print('Distancias calculada')"
         
         while len(self.clust.keys()) != 1:
-            print(iteracion)
+            "print(iteracion)"
             
             cl1, cl2, dist = distancias.minimaDist()
             
@@ -48,7 +50,6 @@ class Cluster:
             del centroides[cl2]
             
             self.clust[cl1] = vector1 + vector2
-            "vectores = self.sacarVetores(self.clust[cl1], self.vect)"
             centroides[cl1] = ut.calcularCentro(self.clust[cl1], self.vect)
             
             distancias.actualizarDist(centroides, cl1, cl2)
@@ -59,21 +60,30 @@ class Cluster:
             
             iteracion+=1
             
-        "print(self.dist)"
+        ut.guardar('resultados\dist.txt', self.dist)
+        ut.guardar('resultados\iter.txt', self.iter)
     
     
+    """
+    Inicializa los clusters
+    Pre : Que la clase tenga una lista de instancias
+    Post: Devuelve una lista de centroides
+    """
     def inicializarCentroides(self):
         centroides = {} 
         
         for each in self.clust.keys():
-            "vectores = self.sacarVetores(self.clust[each], self.vect)"
             centroide = ut.calcularCentro(self.clust[each], self.vect)
             centroides[each] = centroide
             
         return centroides
     
     
-    
+    """
+    Guarda la informacion respecto a cada iteracion
+    Pre : Un integer de la iteracion, la distancia calculada en la iteracion y los clusters
+    Post: escribe la linea correspondiente con la informacion dada
+    """
     def guardarIteracion(self, it, dist, clust):
         string = ' Iteration={};  '.format(it)
         string += 'Distancia={0:.2f};  '.format(round(dist, 2))
@@ -87,12 +97,10 @@ class Cluster:
 
 clust = ut.cargar('resultados\datosAL.txt')
 
-
-"cl = Cluster([(1,3),(1,4),(2,2),(5,2),(5,1),(7,2)])"
 cl = Cluster(clust)
+"cl = Cluster([(1,3),(1,4),(2,2),(5,2),(5,1),(7,2)])"
 
 cl.clustering() 
-print(cl.dist.keys())
 
 ut.guardar('resultados\dist.txt', cl.dist)
 

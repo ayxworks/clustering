@@ -31,8 +31,12 @@ def calcularCentro(lista, vectores):
     return centro
 
 
-
-def listaClusters(inst, agrup, lista):  
+"""
+    Se encarga de actualizar las lista con los clusters que se han asignado a cada instancia
+    pre: una lista de vectores, las agrupaciones y una lista
+    post: Devuelve la lista con la correspondiente agrupacion
+"""
+def listaClusters(inst, agrup, lista): 
     for clust in agrup.keys():
         for each in agrup[clust]:
             "indice = inst.index(each)"
@@ -44,7 +48,7 @@ def listaClusters(inst, agrup, lista):
 
 
 """
-Guarda la estructura jerarquica
+Guarda la estructura de datos
 Pre : El path debe existir
 Post: El archivo con la estructura de datos guardada
 """
@@ -55,7 +59,11 @@ def guardar(path, archivo):
     res.close()
 
 
-
+"""
+Carga la estructura de datos
+Pre : El path debe existir
+Post: La estructura de datos
+"""
 def cargar(path):
     with open(path, "rb") as fp:  
         clust = pickle.load(fp)
@@ -65,7 +73,11 @@ def cargar(path):
     return clust
 
 
-
+"""
+Genera una lista con ceros
+Pre : La longitud de la lista
+Post: U lista
+"""
 def generarLista(num):
     l = [0] * num
     return l
