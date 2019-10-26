@@ -2,7 +2,7 @@
 
 class Distancias:
     def __init__(self):
-        self.clust = {}
+        self.dist = {}
 
     """
         Dada una lista de centroides, inicializa el diccionario con las distancias entre centroides.
@@ -21,11 +21,11 @@ class Distancias:
             else:
                 for cent2 in centroides.keys():
                     if j==i:
-                       distAct = self.distManhattan(centroides[cent1],centroides[cent2])
-                       self.dist[(cent1,cent2)]=distAct
-                       if distAct<distMin:
-                           distMin=distAct
-                           solucion = (cent1,cent2,distMin)
+                        distAct = self.distManhattan(centroides[cent1],centroides[cent2])
+                        self.dist[(cent1,cent2)]=distAct
+                        if distAct<distMin:
+                            distMin=distAct
+                            solucion = (cent1,cent2,distMin)
 
                     else: j+=1
 
@@ -40,9 +40,11 @@ class Distancias:
     """
     def actualizarDist(self, centroides, actualizar, borrar):
         del self.dist[(actualizar,borrar)]
+
         for cent1 in centroides.keys():
-            if cent1 != actualizar:
+            if cent1 != actualizar and cent1 != borrar:
                 if cent1<actualizar:
+                    
                     self.dist[(cent1,actualizar)] = self.distManhattan(centroides[cent1],centroides[actualizar])
                 else:
                     self.dist[(actualizar,cent1)] = self.distManhattan(centroides[cent1],centroides[actualizar])
@@ -57,12 +59,17 @@ class Distancias:
     """
     def minimaDist(self):
         minima=999999
+        x = 0
+        y = 0
+        
         for i in self.dist.keys():
             act = self.dist[i]
             if act<minima:
                 minima=act
+                x, y = i
 
-        return minima
+        
+        return (x, y , minima)
 
 
 
@@ -71,10 +78,12 @@ class Distancias:
         Pre : Coordenadas de dos centroides
         Post: Distancia Manhattan entre los dos centroides.
     """
-    def distManhattan(centr1, centr2):
+    def distManhattan(self, centr1, centr2):
         dist=0
         i=0
         while i<len(centr1):
             dist+= abs(centr1[i]-centr2[i])
             i+=1
+            
+        print((centr1, centr2 , dist))
         return dist
