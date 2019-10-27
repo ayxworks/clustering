@@ -19,7 +19,7 @@ class Cluster:
         
         self.dist = {}
         self.dist[0] = copy(self.clust)
-        self.iter = {}
+        self.iter = ut.generarLista(len(vectores))
         self.iter[0] = copy(self.clust)
 
 
@@ -55,6 +55,7 @@ class Cluster:
             distancias.actualizarDist(centroides, cl1, cl2)
             
             self.dist[dist] = copy(self.clust)
+            self.iter[iteracion] = copy(self.clust)
             
             self.guardarIteracion(iteracion, dist, self.clust)
             
@@ -95,10 +96,10 @@ class Cluster:
         
             
 
-clust = ut.cargar('resultados\datosAL.txt')
+"""clust = ut.cargar('resultados\datosAL.txt')
 
-cl = Cluster(clust)
-"cl = Cluster([(1,3),(1,4),(2,2),(5,2),(5,1),(7,2)])"
+cl = Cluster(clust)"""
+cl = Cluster([(1,3),(1,4),(2,2),(5,2),(5,1),(7,2)])
 
 cl.clustering() 
 

@@ -10,7 +10,7 @@ import util as ut
 
 """
 Escribe en un .txt la asignacion de cada instancia segun la distancia dada
-Pre : El path debe existir, las instancias y y la distancia maxima
+Pre : El path debe existir, las instancias y la distancia maxima
 Post: resultados\Asig.txt con los resultados
 """
 def clusterDist(path, instancias, dist):
@@ -32,7 +32,7 @@ def clusterDist(path, instancias, dist):
     
 """
 Escribe en resultados\Asig.txt la asignacion de cada instancia segun la distancia dada
-Pre : la instancia y y la asignacion
+Pre : la instancia y la asignacion
 Post: una nueva linea en resultados\Asig.txt
 """
 def guardarAsig(inst, asig):
@@ -44,6 +44,28 @@ def guardarAsig(inst, asig):
     res.close()
     
 
+  
+"""
+Devuelve los centroides segun el numero de agrupaciones
+Pre : El path debe existir, las instancias y el numero de clusters
+Post: Los centroides calculados
+"""
+def clustersIteracion(path, instancias, numclus):
+    iteraciones = ut.cargar(path)
+    clusters = iteraciones[len(instancias)-numclus]
+    print(len(clusters.keys()))
+    centroides = {}
+    
+    for each in clusters.keys():
+        centroide = ut.calcularCentro(clusters[each], instancias)
+        centroides[each] = centroide
+        
+    return centroides
+    
+    
+    
+
 
 clusterDist('resultados\dist.txt', [(1,3),(1,4),(2,2),(5,2),(5,1),(7,2)], 3)
-    
+
+print(clustersIteracion('resultados\iter.txt', [(1,3),(1,4),(2,2),(5,2),(5,1),(7,2)], 3))
