@@ -3,9 +3,10 @@ import util as ut
 from copy import copy
 
 class Distancias:
-    def __init__(self, num):
+    def __init__(self, num, m):
         lista = ut.generarLista(num)
         self.dist = [copy(lista) for i in range(num)]
+        self.coeficiente = m
 
     """
         Dada una lista de centroides, inicializa el diccionario con las distancias entre centroides.
@@ -22,7 +23,7 @@ class Distancias:
                 return solucion
             else:
                 while j < len(centroides):
-                    distAct = self.distManhattan(centroides[i],centroides[j])
+                    distAct = self.calcularDistancia(centroides[i],centroides[j],self.coeficiente)
                     self.dist[i][j] = distAct
                     j+=1
 
@@ -37,13 +38,12 @@ class Distancias:
     """
     def actualizarDist(self, centroides, actualizar, borrar):
         i=0
-        
         while i < len(centroides):
             if i != actualizar and i != borrar:
                 if i<actualizar:
-                    self.dist[i][actualizar] = self.distManhattan(centroides[i],centroides[actualizar])
+                    self.dist[i][actualizar] = self.calcularDistancia(centroides[i],centroides[actualizar], self.coeficiente)
                 else:
-                    self.dist[actualizar][i] = self.distManhattan(centroides[i],centroides[actualizar])
+                    self.dist[actualizar][i] = self.calcularDistancia(centroides[i],centroides[actualizar],self.coeficiente)
             i+=1
             
             
@@ -84,14 +84,18 @@ class Distancias:
 
     """
         Calcula la distancia manhattan entre dos centroides.
-        Pre : Coordenadas de dos centroides
-        Post: Distancia Manhattan entre los dos centroides.
+        Pre : Coordenadas de dos centroides y valor m
+            m=1 -> Distancia Manhattan
+            m=2 -> Distancia Euclidea
+            m=7.5 -> Distancia Minkowski
+        Post: Distancia Manhattan, Euclidea o Minkowski entre los dos centroides.
     """
-    def distManhattan(self, centr1, centr2):
+    def calcularDistancia(self, centr1, centr2, m):
         dist=0
         i=0
         while i<len(centr1):
-            dist+= abs(centr1[i]-centr2[i])
+            dist+= (abs(centr1[i]-centr2[i]))**m
             i+=1
-        
+        dist = dist**(1/m)
         return dist
+
