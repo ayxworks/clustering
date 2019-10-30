@@ -29,16 +29,16 @@ class Cluster:
     Pre : Haber creado la clase con los vectores numericos.
     Post: La estructura jerarquica de la agrupacion
     """
-    def clustering (self):
+    def clustering (self, dist):
         iteracion = 1
         centroides = self.inicializarCentroides()
-        "print('Centroides calculados')"
-        distancias = dis.Distancias()
+        print('Centroides calculados')
+        distancias = dis.Distancias(dist)
         distancias.inicializarDist(centroides)
-        "print('Distancias calculada')"
+        print('Distancias calculada')
         
         while len(self.clust.keys()) != 1:
-            "print(iteracion)"
+            print(iteracion)
             
             cl1, cl2, dist = distancias.minimaDist()
             
@@ -96,14 +96,12 @@ class Cluster:
         
             
 
-"""clust = ut.cargar('resultados\datosAL.txt')
+clust = ut.cargar('resultados\datosAL.txt')
 
-cl = Cluster(clust)"""
-cl = Cluster([(1,3),(1,4),(2,2),(5,2),(5,1),(7,2)])
+cl = Cluster(clust)
+"cl = Cluster([(1,3),(1,4),(2,2),(5,2),(5,1),(7,2)])"
 
-cl.clustering() 
-
-ut.guardar('resultados\dist.txt', cl.dist)
+cl.clustering(1) 
 
 
 
