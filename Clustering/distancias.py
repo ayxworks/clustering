@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
+import util as ut
+from copy import copy
 
 class Distancias:
-    def __init__(self, m):
-        self.dist = {}
+    def __init__(self, num, m):
+        lista = ut.generarLista(num)
+        self.dist = [copy(lista) for i in range(num)]
         self.coeficiente = m
 
     """
@@ -10,29 +13,23 @@ class Distancias:
         Pre: Lista con los centroides de todos los clusters antes de realizar el clustering
         Post: Diccionario de distancias entre clusters inicializado.
     """
-    def inicializarDist(self,centroides):
-        "distMin = 99999"
-        i = 1
-        j=0
+    def inicializarDist(self, centroides):
+        i = 0
+        j=1
         solucion=()
 
-        for cent1 in centroides.keys():
-            if i==len(centroides):
+        while i < len(centroides)-1:
+            if i+1==len(centroides):
                 return solucion
             else:
-                for cent2 in centroides.keys():
-                    if j==i:
-                        distAct = self.calcularDistancia(centroides[cent1],centroides[cent2], self.coeficiente)
-                        self.dist[(cent1,cent2)]=distAct
-                        """if distAct<distMin:
-                            distMin=distAct
-                            solucion = (cent1,cent2,distMin)"""
-
-                    else: j+=1
+                while j < len(centroides):
+                    distAct = self.calcularDistancia(centroides[i],centroides[j],self.coeficiente)
+                    self.dist[i][j] = distAct
+                    j+=1
 
                 i+=1
-                j=0
-
+                j=i+1
+        
 
     """
         Dada una lista de centroides, el cluster a actualizar y el cluster a eliminar, actualiza el diccionario de distancias tras unir dos clusters.
@@ -40,20 +37,24 @@ class Distancias:
         Post: Diccionario de distancias entre clusters actualizado.
     """
     def actualizarDist(self, centroides, actualizar, borrar):
-        del self.dist[(actualizar,borrar)]
-
-        for cent1 in centroides.keys():
-            if cent1 != actualizar and cent1 != borrar:
-                if cent1<actualizar:
-                    
-                    self.dist[(cent1,actualizar)] = self.calcularDistancia(centroides[cent1],centroides[actualizar], self.coeficiente)
+        i=0
+        while i < len(centroides):
+            if i != actualizar and i != borrar:
+                if i<actualizar:
+                    self.dist[i][actualizar] = self.calcularDistancia(centroides[i],centroides[actualizar], self.coeficiente)
                 else:
-                    self.dist[(actualizar,cent1)] = self.calcularDistancia(centroides[cent1],centroides[actualizar], self.coeficiente)
-
-                if cent1<borrar:
-                    del self.dist[cent1,borrar]
-                else:
-                    del self.dist[borrar,cent1]
+                    self.dist[actualizar][i] = self.calcularDistancia(centroides[i],centroides[actualizar],self.coeficiente)
+            i+=1
+            
+            
+        i=0
+        while i < len(centroides):
+            if i != borrar:
+                del self.dist[i][borrar]
+            i+=1
+        
+        del self.dist[borrar]
+        
 
     """
         Recorre el diccionario de distancias buscando la menor.
@@ -62,12 +63,19 @@ class Distancias:
         minima=999999
         x = 0
         y = 0
+        i = 0
+        j = 1
         
-        for i in self.dist.keys():
-            act = self.dist[i]
-            if act<minima:
-                minima=act
-                x, y = i
+        while i < len(self.dist[0])-1:
+            while j < len(self.dist[0]):
+                act = self.dist[i][j]
+                if act<minima:
+                    minima=act
+                    x, y = (i, j)
+                j+=1
+            
+            i+=1
+            j=i+1
 
         
         return (x, y , minima)
@@ -76,15 +84,18 @@ class Distancias:
 
     """
         Calcula la distancia manhattan entre dos centroides.
-        Pre : Coordenadas de dos centroides
-        Post: Distancia Manhattan entre los dos centroides.
+        Pre : Coordenadas de dos centroides y valor m
+            m=1 -> Distancia Manhattan
+            m=2 -> Distancia Euclidea
+            m=7.5 -> Distancia Minkowski
+        Post: Distancia Manhattan, Euclidea o Minkowski entre los dos centroides.
     """
     def calcularDistancia(self, centr1, centr2, m):
         dist=0
         i=0
         while i<len(centr1):
-            dist+= pow(abs(centr1[i]-centr2[i]), m)
+            dist+= (abs(centr1[i]-centr2[i]))**m
             i+=1
-        dist = pow(dist, 1/m)
-        
+        dist = dist**(1/m)
         return dist
+

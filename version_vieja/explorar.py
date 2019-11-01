@@ -53,14 +53,12 @@ Post: Los centroides calculados
 def clustersIteracion(path, instancias, numclus):
     iteraciones = ut.cargar(path)
     clusters = iteraciones[len(instancias)-numclus]
-    print(len(clusters))
-    centroides = ut.generarLista(len(clusters))
-    i = 0
+    print(len(clusters.keys()))
+    centroides = {}
     
-    while i<len(clusters):
-        centroide = ut.calcularCentro(clusters[i], instancias)
-        centroides[i] = centroide
-        i+=1
+    for each in clusters.keys():
+        centroide = ut.calcularCentro(clusters[each], instancias)
+        centroides[each] = centroide
         
     return centroides
     

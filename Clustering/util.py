@@ -37,12 +37,14 @@ def calcularCentro(lista, vectores):
     post: Devuelve la lista con la correspondiente agrupacion
 """
 def listaClusters(inst, agrup, lista): 
-    for clust in agrup.keys():
-        for each in agrup[clust]:
+    i = 0
+    while i<len(agrup):
+        for each in agrup[i]:
             "indice = inst.index(each)"
-            lista[each] = clust
+            lista[each] = i
             
-            
+        i+=1
+        
     return lista
 
 

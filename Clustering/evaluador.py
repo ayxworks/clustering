@@ -23,7 +23,7 @@ class Evaluador:
                 agrup = res[each]
                 labels = ut.listaClusters(instancias, agrup, labels)
                 score = self.daviesBouldin(instancias, labels)
-                self.guardarScore(len(agrup.keys()), score)
+                self.guardarScore(len(agrup), score)
                 if score>scoreMax: scoreMax = score
                 elif score<scoreMax: 
                     parar = True
@@ -31,9 +31,6 @@ class Evaluador:
                 
             i+=1
             
-        
-        
-        
     
     def daviesBouldin(self, inst, labels):
         score = davies_bouldin_score(inst, labels)
