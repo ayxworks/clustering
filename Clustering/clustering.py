@@ -9,6 +9,12 @@ from copy import copy
 import distancias as dis
 
 class Cluster:
+
+    """
+        Se encarga de inicializar la clase dado la lista de vectores
+        Pre: una lista de tuplas numericas con el mismo espacio vectorial
+        Post: Nada
+    """
     def __init__(self, vectores):
         self.vect = vectores
         self.clust = ut.generarLista(len(vectores))

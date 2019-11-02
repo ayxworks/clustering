@@ -3,6 +3,12 @@ import util as ut
 from copy import copy
 
 class Distancias:
+
+    """
+        Se encarga de inicializar la matriz de distancias con valor cero
+        Pre: El numero de instancias y el coeficiente para calcular las distancias
+        Post: Nada
+    """
     def __init__(self, num, m):
         lista = ut.generarLista(num)
         self.dist = [copy(lista) for i in range(num)]

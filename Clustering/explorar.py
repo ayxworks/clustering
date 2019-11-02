@@ -9,7 +9,7 @@ import util as ut
 
 
 """
-Escribe en un .txt la asignacion de cada instancia segun la distancia dada
+Escribe en resultados\Asig.txt la asignacion de cada instancia segun la distancia dada
 Pre : El path debe existir, las instancias y la distancia maxima
 Post: resultados\Asig.txt con los resultados
 """
