@@ -19,12 +19,16 @@ class Cluster:
         self.vect = vectores
         self.clust = ut.generarLista(len(vectores))
         i = 0
+        
+        "Generamos la lista de clusters"
         while i<len(vectores): 
             self.clust[i] = [i]
             i+=1
         
+        "El diccionario donde se guardaran las distancias y el estado de los clusters"
         self.dist = {}
         self.dist[0] = copy(self.clust)
+        "Se inicializa la lista donde se guardara el estado de cada iteracion"
         self.iter = ut.generarLista(len(vectores))
         self.iter[0] = copy(self.clust)
 
@@ -37,8 +41,10 @@ class Cluster:
     """
     def clustering (self, dist):
         iteracion = 1
+        "Calculamos los centroides"
         centroides = self.inicializarCentroides()
         print('Centroides calculados')
+        "Inicializamos las distancias"
         distancias = dis.Distancias(len(self.vect), dist)
         distancias.inicializarDist(centroides)
         print('Distancias calculada')
@@ -48,6 +54,7 @@ class Cluster:
             
             cl1, cl2, dist = distancias.minimaDist()
             
+            "Recogemos ambos clusters y actualizamos"
             vector1 = self.clust[cl1]
             vector2 = self.clust[cl2]
             
@@ -59,7 +66,7 @@ class Cluster:
             del self.clust[cl2]
             del centroides[cl2]
             
-            
+            "Guardamos las nuevas iteraciones"
             self.dist[dist] = copy(self.clust)
             self.iter[iteracion] = copy(self.clust)
             
@@ -67,6 +74,7 @@ class Cluster:
             
             iteracion+=1
             
+        "Guardamos las estructuras de datos para utilizarlas mas tarde"
         ut.guardar('resultados\dist.txt', self.dist)
         ut.guardar('resultados\iter.txt', self.iter)
     
