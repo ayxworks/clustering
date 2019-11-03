@@ -25,7 +25,7 @@ class Evaluador:
 
         for each in res.keys():
             "if i!=0 and i%10==0 and i <= hasta and not parar:"
-            if i!=0 and i%10==0 and i <= hasta:
+            if i!=0 and i%10==0:
                 agrup = res[each]
                 labels = ut.listaClusters(instancias, agrup, labels)
                 score = self.daviesBouldin(instancias, labels)
