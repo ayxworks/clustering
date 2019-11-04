@@ -10,6 +10,7 @@ string: para trabajr con el texto y encoding
 import os
 import nltk
 import string
+import random
 import pandas as pd     #trabajar con tablas/csv
 from bs4 import BeautifulSoup
 from nltk.corpus import wordnet
@@ -41,7 +42,9 @@ class Datos:
     def __init__(self, articulo):
         self.temas = []
         self.sitios = []
+        self.tema_numerico = []
         self.palabras = ListaDicc()
+        self.articulo = ListaDicc()
         self.asignarTemaArticulo(articulo)
         self.asignarLugarArticulo(articulo)
 
@@ -60,6 +63,13 @@ class Datos:
             self.sitios.append(un_lugar)
             Datos.etiquetas_temas_sitios.add(un_lugar)
 
+    def asignarTemaNumerico(self, lista_temas):
+        """ funcion que asugna la etiqueta tema numerico para evaluacion del cluster """
+        if self.temas == None:
+            self.tema_numerico.append(0)
+        for tema in self.temas:
+            self.tema_numerico.append(lista_temas.index(tema))        
+
     def aumentar_lista_dicc(self, articulo):
         """ crea una lista de tokens de las palabras del titulo/cuerpo """
         texto = articulo.find('text')
@@ -68,9 +78,10 @@ class Datos:
         boolEtiqueta = False
         if titulo != None:
             self.palabras.titulo = self.tokenizacion(titulo.text, boolEtiqueta)
+            self.articulo.titulo = titulo.text
         if cuerpo != None:
             self.palabras.cuerpo = self.tokenizacion(cuerpo.text, boolEtiqueta)
-
+            self.articulo.titulo = cuerpo.text
 
     def tokenizacion(self, texto, bool_etiquetas = False):
         """ crea la lista de palabras que analizaremos  """
@@ -176,21 +187,40 @@ def escanear_docs(directorio):
         print("Se ha terminado de examinar el fichero:", fichero)
     return documentos
 
-def preprocesar():
+def crearListaTemasTotales(documentos):
+    lista = set()
+    lista.add("none")
+    for doc in documentos:
+        for tema in doc.articulo.temas:
+            lista.add(tema)
+    return list(lista)
+
+def shuffle_split(directorio):
+    documentos = escanear_docs(directorio)
+    random.shuffle(documentos)
+    train_data = documentos[:int((len(documentos)+1)*.80)]
+    test_data = documentos[int(len(documentos)*.80+1):]
+    return train_data, test_data
+
+def preprocesar_train():
     directorio = 'datos'
     print('\nGenerando los vectores de las instancias')
-    documentos = escanear_docs(directorio)
-    
-    #texto_dicc = set()
-    print("------------------------------------------------------------")
-    #generar un diccionario de palabrtas que no se repiten (nuestro vocabulario)
-    """
-    for articulo in documentos:
-        for words in articulo.palabras.titulo:
-            texto_dicc.add(words)
-        for words in articulo.palabras.cuerpo:
-            texto_dicc.add(words)
-    """
+    train, test = shuffle_split(directorio)
+    lista = list(set(crearListaTemasTotales(train)) + set(crearListaTemasTotales(test)))
+    for doc in train:
+        doc.asignarTemaNumerico(lista)
+    tfidf = Tf_Idf(train)
     print('Preproceso completado!')
-    tfidf = Tf_Idf(documentos)
-    return tfidf
+    return train, tfidf
+
+def preprocesar_test(tfidf, cluster, newData):
+    directorio = 'datos'
+    print('\nGenerando los vectores de las instancias')
+    train, test = shuffle_split(directorio)
+    lista = list(set(crearListaTemasTotales(train)) + set(crearListaTemasTotales(test)))
+    for doc in test:
+        doc.asignarTemaNumerico(lista)
+    tfidf = Tf_Idf(test)
+    print('Preproceso completado!')
+
+    return train, test, tfidf

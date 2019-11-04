@@ -1,18 +1,22 @@
 import sys
 import time
 import preproceso
+import util
 
 def main(argv):
     comienzo = time.time()
     print('\n')
     ##########################################################################################
     print('1: Preprocessing')
-    documentos = preproceso.preprocesar()
+    documentos, tfidf_vecs = preproceso.preprocesar_train()
+    #util.guardar("/prueba_pickle", documentos)
+    #prueba = util.cargar("/prueba_pickle")
     #print(documentos.vector)
     #print(documentos.atributos)
     #print(documentos.tabla)
     #documentos.print_tabla()
-    print(documentos.vDocs[0]) #lista de tuplas(/vectores)
+    print(tfidf_vecs.vDocs[0]) #lista de tuplas(/vectores)
+    #print(prueba.vDocs[0]) 
 
     tiempo = time.time() - comienzo
     tiempo = time.strftime("%H:%M:%S", time.gmtime(tiempo))
