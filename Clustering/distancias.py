@@ -88,20 +88,4 @@ class Distancias:
 
 
 
-    """
-        Calcula la distancia manhattan entre dos centroides.
-        Pre : Coordenadas de dos centroides y valor m
-            m=1 -> Distancia Manhattan
-            m=2 -> Distancia Euclidea
-            m=7.5 -> Distancia Minkowski
-        Post: Distancia Manhattan, Euclidea o Minkowski entre los dos centroides.
-    """
-    def calcularDistancia(self, centr1, centr2, m):
-        dist=0
-        i=0
-        while i<len(centr1):
-            dist+= (abs(centr1[i]-centr2[i]))**m
-            i+=1
-        dist = dist**(1/m)
-        return dist
 

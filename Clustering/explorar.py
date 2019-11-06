@@ -63,11 +63,40 @@ def clustersIteracion(path, instancias, numclus):
         i+=1
         
     return centroides
-    
-    
+
+"""
+Agrupa una lista de instancias a un numero elegido de clusters
+Pre:El path debe existir, las instancias y el numero de clusters
+Post: Lista de instancia, cluster al cual ha sido agrupado y la distancia a su centroide.
+"""
+
+def agruparInstanciasPorCluster(path,instancias,numClus,instanciasAClasif):
+    centroides = clustersIteracion(path,instancias,numClus)
+    agrupacion=[]
+
+    for inst in instanciasAClasif:
+        mindist = 999999
+        for cent in centroides:
+            distancia = ut.calcularDistancia(cent,inst,1)
+            if distancia<mindist:
+                mindist=distancia
+                agrup=tuple((inst,cent,mindist))
+                centAct=cent
+        "Cambiar a id de instancia"
+        string = ' Instancia: {}  '.format(inst)
+        "Cambiar a posicion de centroide"
+        string += 'Centroide: {}'.format(centAct)
+        string += '  Distancia: {}'.format(mindist)
+        string += '\n'
+        print (string)
+        agrupacion.append(agrup)
+
+    return agrupacion
+
     
 
 
-clusterDist('resultados\dist.txt', [(1,3),(1,4),(2,2),(5,2),(5,1),(7,2)], 3)
+"""clusterDist('resultados\dist.txt', [(1,3),(1,4),(2,2),(5,2),(5,1),(7,2)], 3)
 
-print(clustersIteracion('resultados\iter.txt', [(1,3),(1,4),(2,2),(5,2),(5,1),(7,2)], 3))
+print(clustersIteracion('resultados\iter.txt', [(1,3),(1,4),(2,2),(5,2),(5,1),(7,2)], 3))"""
+agruparInstanciasPorCluster('resultados\iteraciones.txt', [(1,3),(1,4),(2,2),(5,2),(5,1),(7,2)], 3,[(2,1),(3,1),(7,0)])

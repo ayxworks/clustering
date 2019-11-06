@@ -6,6 +6,7 @@ Created on Sat Oct 19 17:59:51 2019
 """
 from sklearn.metrics import davies_bouldin_score
 from sklearn.metrics import calinski_harabasz_score
+from sklearn.metrics import jaccard_score
 import util as ut
 
 class Evaluador:
@@ -68,6 +69,6 @@ class Evaluador:
         res.close()
         
 
-clust = ut.cargar('resultados\datosAL.txt')
+"""clust = ut.cargar('resultados\datosAL.txt')
 ev = Evaluador()
-ev.evaluar('resultados\dist.txt', clust)
+ev.evaluar('resultados\dist.txt', clust)"""
