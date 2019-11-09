@@ -7,6 +7,7 @@ Created on Sat Oct 19 17:59:51 2019
 from sklearn.metrics import davies_bouldin_score
 from sklearn.metrics import calinski_harabasz_score
 from sklearn.metrics import jaccard_score
+import math
 import util as ut
 
 class Evaluador:
@@ -22,11 +23,11 @@ class Evaluador:
         i = 0
         "parar = False"
         scoreMax = 0
-        hasta = len(res.keys())*0.9
+        salto = math.ceil(len(res.keys())*0.01)
 
         for each in res.keys():
             "if i!=0 and i%10==0 and i <= hasta and not parar:"
-            if i!=0 and i%10==0:
+            if i!=0 and i%salto==0 and i<len(res.keys())-1:
                 agrup = res[each]
                 labels = ut.listaClusters(instancias, agrup, labels)
                 score = self.daviesBouldin(instancias, labels)
