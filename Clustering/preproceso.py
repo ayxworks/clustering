@@ -11,6 +11,7 @@ import os
 import nltk
 import string
 import random
+import util
 import pandas as pd     #trabajar con tablas/csv
 from bs4 import BeautifulSoup
 from nltk.corpus import wordnet
@@ -191,9 +192,10 @@ def crearListaTemasTotales(documentos):
     lista = set()
     lista.add("none")
     for doc in documentos:
-        for tema in doc.articulo.temas:
+        for tema in doc.temas:
             lista.add(tema)
-    return list(lista)
+            print(tema)
+    return lista
 
 def shuffle_split(directorio):
     documentos = escanear_docs(directorio)
@@ -202,22 +204,25 @@ def shuffle_split(directorio):
     test_data = documentos[int(len(documentos)*.80+1):]
     return train_data, test_data
 
-def preprocesar_train():
-    directorio = 'datos'
+def preprocesar_train(directorio_ruta):
+    #directorio = 'datos'
     print('\nGenerando los vectores de las instancias')
-    train, test = shuffle_split(directorio)
-    lista = list(set(crearListaTemasTotales(train)) + set(crearListaTemasTotales(test)))
+    train, test = shuffle_split(directorio_ruta)
+    lista = list(crearListaTemasTotales(train) & crearListaTemasTotales(test))
     for doc in train:
         doc.asignarTemaNumerico(lista)
     tfidf = Tf_Idf(train)
+    util.guardar("lista_articulos_train", train)
+    util.guardar("lista_articulos_test", test)
+    util.guardar("train_tfidf", tfidf)
     print('Preproceso completado!')
     return train, tfidf
 
-def preprocesar_test(tfidf, cluster, newData):
-    directorio = 'datos'
+def preprocesar_test(tfidf, newData):
+    #directorio = 'testing'
     print('\nGenerando los vectores de las instancias')
-    train, test = shuffle_split(directorio)
-    lista = list(set(crearListaTemasTotales(train)) + set(crearListaTemasTotales(test)))
+    train, test = shuffle_split(newData)
+    lista = list(crearListaTemasTotales(train) & crearListaTemasTotales(test))
     for doc in test:
         doc.asignarTemaNumerico(lista)
     tfidf = Tf_Idf(test)

@@ -115,9 +115,9 @@ class Cluster:
 """clust = ut.cargar('resultados\datosAL.txt')
 
 cl = Cluster(clust)"""
-cl = Cluster([(1,3),(1,4),(2,2),(5,2),(5,1),(7,2)])
+#cl = Cluster([(1,3),(1,4),(2,2),(5,2),(5,1),(7,2)])
 
-cl.clustering(1)
+#cl.clustering(1)
 
 
 
