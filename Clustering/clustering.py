@@ -4,6 +4,7 @@ Created on Wed Oct 16 13:14:33 2019
 
 @author: StromValhalla
 """
+import os
 import util as ut
 from copy import copy
 import distancias as dis
@@ -75,8 +76,8 @@ class Cluster:
             iteracion+=1
             
         "Guardamos las estructuras de datos para utilizarlas mas tarde"
-        ut.guardar('resultados\dist.txt', self.dist)
-        ut.guardar('resultados\iter.txt', self.iter)
+        ut.guardar(os.getcwd() + "/resultados/resultados/dist.txt", self.dist)
+        ut.guardar(os.getcwd() + "/resultados/iter.txt", self.iter)
     
     
     """
@@ -106,7 +107,7 @@ class Cluster:
         string += 'Distancia={0:.2f};  '.format(round(dist, 2))
         for cl in clust: string += '{}; '.format(cl)
         string += '\n' 
-        with open('resultados\iteraciones.txt', "a") as res: res.write(string)
+        with open(os.getcwd() + "/resultados/iteraciones.txt", "a") as res: res.write(string)
         
         res.close()
         
