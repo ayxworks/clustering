@@ -29,7 +29,7 @@ class Distancias:
                 return solucion
             else:
                 while j < len(centroides):
-                    distAct = self.calcularDistancia(centroides[i],centroides[j],self.coeficiente)
+                    distAct = ut.calcularDistancia(centroides[i],centroides[j],self.coeficiente)
                     self.dist[i][j] = distAct
                     j+=1
 
@@ -47,9 +47,9 @@ class Distancias:
         while i < len(centroides):
             if i != actualizar and i != borrar:
                 if i<actualizar:
-                    self.dist[i][actualizar] = self.calcularDistancia(centroides[i],centroides[actualizar], self.coeficiente)
+                    self.dist[i][actualizar] = ut.calcularDistancia(centroides[i],centroides[actualizar], self.coeficiente)
                 else:
-                    self.dist[actualizar][i] = self.calcularDistancia(centroides[i],centroides[actualizar],self.coeficiente)
+                    self.dist[actualizar][i] = ut.calcularDistancia(centroides[i],centroides[actualizar],self.coeficiente)
             i+=1
             
             
