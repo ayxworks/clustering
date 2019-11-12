@@ -52,10 +52,12 @@ class Datos:
     ### funciones ###
     def asignarTemaArticulo(self, articulo):
         """ funcion que asugna la etiqueta tema del articulo """
-        for tema in articulo.find_all("topics"):
-            un_tema = tema.text.encode('utf-8', 'ignore')
-            self.temas.append(un_tema)
-            Datos.etiquetas_temas_sitios.add(un_tema)
+        for temas in articulo.find_all("topics"):
+            for tema in temas:
+                un_tema = tema.get_text()
+                #un_tema = tema.text.encode('utf-8', 'ignore')
+                self.temas.append(un_tema)
+                Datos.etiquetas_temas_sitios.add(un_tema)
 
     def asignarLugarArticulo(self, articulo):
         """ funcion que asugna la etiqueta lugar del articulo """
@@ -69,7 +71,12 @@ class Datos:
         if self.temas == None:
             self.tema_numerico.append(0)
         for tema in self.temas:
-            self.tema_numerico.append(lista_temas.index(tema))        
+            try:
+                self.tema_numerico.append(lista_temas.index(tema))        
+            except ValueError:
+                print(tema + ' ,no esta en la lista y se ha añadido')
+                lista_temas.append(tema)
+                self.tema_numerico.append(lista_temas.index(tema))
 
     def aumentar_lista_dicc(self, articulo):
         """ crea una lista de tokens de las palabras del titulo/cuerpo """
@@ -158,7 +165,7 @@ class Tf_Idf:
         for i, doc in enumerate(docs):
             palabras_dicc[i] = ' '.join(doc.palabras.titulo + doc.palabras.cuerpo)
         listaVocab.update(palabras_dicc)
-        util.guardar('vocabulario' ,listaVocab)
+        util.guardar(os.getcwd()+"/preproceso/vocabulario" ,listaVocab)
         pesos = self.tfidf.fit_transform(listaVocab.values())
         self.vector = pesos
         atributos = self.tfidf.get_feature_names()
@@ -205,7 +212,7 @@ def crearListaTemasTotales(documentos):
     for doc in documentos:
         for tema in doc.temas:
             lista.add(tema)
-            print(tema)
+    print(lista)
     return lista
 
 def shuffle_split(directorio):
@@ -220,14 +227,15 @@ def preprocesar_train(directorio_ruta):
     print('\nGenerando los vectores de las instancias')
     train, test = shuffle_split(directorio_ruta)
     lista = list(crearListaTemasTotales(train) & crearListaTemasTotales(test))
-    util.guardar('lista_temas', lista)
+    print(len(lista))
     for doc in train:
         doc.asignarTemaNumerico(lista)
+    util.guardar(os.getcwd()+"/preproceso/lista_temas", lista)
     tfidf = Tf_Idf()
     tfidf.generar_vector_tupla_pesos(train)
-    util.guardar("lista_articulos_train", train)
-    util.guardar("lista_articulos_test", test)
-    util.guardar("train_tfidf", tfidf)
+    util.guardar(os.getcwd()+"/preproceso/lista_articulos_train", train)
+    util.guardar(os.getcwd()+"/preproceso/lista_articulos_test", test)
+    util.guardar(os.getcwd()+"/preproceso/train_tfidf", tfidf)
     print('Preproceso completado!')
     return tfidf, train
 
