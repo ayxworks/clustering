@@ -126,16 +126,25 @@ class Datos:
 fichero_datos_vectores = ['datasets/dataset1.csv', 'datasets/dataset2.csv']
 
 class Tf_Idf:
-    def __init__(self, texto):
+    def __init__(self):
         self.tfidf = TfidfVectorizer(max_df=0.9)
         self.vector = None
         self.atributos = []
         self.vDocs = []
 
-        self.generar_vector_tupla_pesos(texto)
-
     def generar_vector_tupla_pesos(self, texto):
-        palabras, pesos = self.generar_vocab_npalabras(texto)
+        listaVocab = dict([])
+        palabras, pesos = self.generar_vocab_npalabras(texto, listaVocab)
+        matriz_completa = pesos.toarray()
+        for articulo, fila in enumerate(matriz_completa):
+            doc = list()
+            for i, palabra in enumerate(fila):
+                doc.append(matriz_completa[articulo][i])
+            self.vDocs.append(tuple(doc))
+        print("Lista de tuplas de vectores tf-idf generada")
+    
+    def generar_vector_tupla_pesos_newInst(self, texto, listaVocab):
+        palabras, pesos = self.generar_vocab_npalabras(texto, listaVocab)
         matriz_completa = pesos.toarray()
         for articulo, fila in enumerate(matriz_completa):
             doc = list()
@@ -144,11 +153,13 @@ class Tf_Idf:
             self.vDocs.append(tuple(doc))
         print("Lista de tuplas de vectores tf-idf generada")
 
-    def generar_vocab_npalabras(self, docs):
+    def generar_vocab_npalabras(self, docs, listaVocab):
         palabras_dicc = dict([])
         for i, doc in enumerate(docs):
             palabras_dicc[i] = ' '.join(doc.palabras.titulo + doc.palabras.cuerpo)
-        pesos = self.tfidf.fit_transform(palabras_dicc.values())
+        listaVocab.update(palabras_dicc)
+        util.guardar('vocabulario' ,listaVocab)
+        pesos = self.tfidf.fit_transform(listaVocab.values())
         self.vector = pesos
         atributos = self.tfidf.get_feature_names()
         self.atributos = atributos
@@ -209,23 +220,27 @@ def preprocesar_train(directorio_ruta):
     print('\nGenerando los vectores de las instancias')
     train, test = shuffle_split(directorio_ruta)
     lista = list(crearListaTemasTotales(train) & crearListaTemasTotales(test))
+    util.guardar('lista_temas', lista)
     for doc in train:
         doc.asignarTemaNumerico(lista)
-    tfidf = Tf_Idf(train)
+    tfidf = Tf_Idf()
+    tfidf.generar_vector_tupla_pesos(train)
     util.guardar("lista_articulos_train", train)
     util.guardar("lista_articulos_test", test)
     util.guardar("train_tfidf", tfidf)
     print('Preproceso completado!')
-    return train, tfidf
+    return tfidf, train
 
-def preprocesar_test(tfidf, newData):
+def preprocesar_test(tfidf, newData, vocabulario_path, lista_temas_path):
     #directorio = 'testing'
     print('\nGenerando los vectores de las instancias')
-    train, test = shuffle_split(newData)
-    lista = list(crearListaTemasTotales(train) & crearListaTemasTotales(test))
-    for doc in test:
+    n_docs = len(tfidf)
+    n_new_inst = len(newData)
+    lista = list(crearListaTemasTotales(newData) & util.cargar(lista_temas_path))
+    util.guardar('new_lista_temas', lista)
+    for doc in newData:
         doc.asignarTemaNumerico(lista)
-    tfidf = Tf_Idf(test)
+    listaVocabulario = util.cargar(vocabulario_path)
+    tfidf = tfidf.generar_vector_tupla_pesos_newInst(newData, listaVocabulario)
     print('Preproceso completado!')
-
-    return train, test, tfidf
+    return tfidf, n_docs, n_new_inst
