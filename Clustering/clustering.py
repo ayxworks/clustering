@@ -76,7 +76,7 @@ class Cluster:
             iteracion+=1
             
         "Guardamos las estructuras de datos para utilizarlas mas tarde"
-        ut.guardar(os.getcwd() + "/resultados/resultados/dist.txt", self.dist)
+        ut.guardar(os.getcwd() + "/resultados/dist.txt", self.dist)
         ut.guardar(os.getcwd() + "/resultados/iter.txt", self.iter)
     
     

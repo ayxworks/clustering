@@ -29,6 +29,12 @@ def runClusteringPruebas(argumentos):
     if not argumentos.skip_evaluacion:
         print('3: Evaluando')
 
+        print ('Ha tardado en evaluar ', calc_tiempo(comienzo), 'segundos!')    
+    
+    ##########################################################################################
+    if not argumentos.skip_newInst:
+        print('4: Evaluando')
+
         print ('Ha tardado en evaluar ', calc_tiempo(comienzo), 'segundos!')
     
     print ('Fin del programa: ', calc_tiempo(comienzo), 'segundos!')
@@ -63,6 +69,8 @@ def readCommand( argv ):
                       help='Flag para saltarse el clustering', default=True)
     parser.add_option('-t', '--skip_evaluacion', action='store_false', dest='skip_evaluacion',
                       help='Flag para saltarse la evaluacion', default=True)
+    parser.add_option('-u', '--skip_newInst', action='store_false', dest='skip_newInst',
+                      help='Flag para saltarse el apartado de anadir nuevas instancias', default=True)
     parser.add_option('-a', '--asignar_cluster', dest='asignar_cluster',
                       help='Elegir un cluster si ya hay una estructura', default='/resultados/datosAL.txt')
     parser.add_option('-e', '--evaluation', dest='evaluation',
