@@ -45,10 +45,10 @@ def readCommand( argv ):
     usageStr = """
     USO:      python main.py <options>
     EJEMPLOS:   (1) python main.py
-                    - starts an interactive game
-                (2) python main.py --preproceso smallClassic --zoom 2
-                OR  python main.py -l smallClassic -z 2
-                    - starts an interactive game on a smaller board, zoomed in
+                    - Se hace el preproceso y el cluster en carpetas predeterminadas
+                (2) python main.py --preproceso carpeta_preproceso --clustering carpeta_cluster
+                OR  python main.py -l carpeta_preproceso -z carpeta_cluster
+                    - Se hace el preproceso y el cluster en carpetas predeterminadas
     """
     parser = OptionParser(usageStr)
     parser.add_option('-p', '--preproceso', dest='preproceso',
@@ -57,6 +57,10 @@ def readCommand( argv ):
                       help='Se crea el cluster y se calculan las distancias', default='train_tfidf')
     parser.add_option('-t', '--testing', action='store', dest='testing',
                       help='Pruebas', default='lista_articulos_test')
+    parser.add_option('-r','--skip_preproceso', action='store_true', dest='skip_preproceso',
+                      help='Flag para saltarse el preproceso', default=True)
+    parser.add_option('-s', '--skip_clustering', action='store_true', dest='skip_clustering',
+                      help='Flag para saltarse el clustering', default=True)
     parser.add_option('-a', '--asignar_cluster', dest='asignar_cluster',
                       help='Elegir un cluster si ya hay una estructura', default='resultados\datosAL.txt')
     parser.add_option('-e', '--evaluation', dest='evaluation',
