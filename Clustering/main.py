@@ -14,25 +14,24 @@ def runClusteringPruebas(argumentos):
         #directorio_ruta = 'datos'
         print(argumentos)
         tfidf_vecs, documentos = preproceso.preprocesar_train(argumentos.preproceso)
-        tiempo = time.time() - comienzo
-        tiempo = time.strftime("%H:%M:%S", time.gmtime(tiempo))
-        print ('Ha tardado en preprocesar ', tiempo, 'segundos!')
+
+        print ('Ha tardado en preprocesar ', calc_tiempo(comienzo), 'segundos!')
     ##########################################################################################
-    if not argumentos.skip_preproceso:
+    if not argumentos.skip_clustering:
         print('2: Clustering')
         tfidf = util.cargar(os.getcwd() + argumentos.crear_cluster)
         cl = clustering.Cluster(tfidf.vDocs)
         cl.clustering(argumentos.distancia)
-        tiempo = time.time() - comienzo
-        tiempo = time.strftime("%H:%M:%S", time.gmtime(tiempo))
-        print ('Ha tardado en hacer el cluster jerarquico ', tiempo, 'segundos!')
+
+        print ('Ha tardado en hacer el cluster jerarquico ', calc_tiempo(comienzo), 'segundos!')
     ##########################################################################################
-    if not argumentos.skip_preproceso:
+    if not argumentos.skip_evaluacion:
         print('3: Evaluando')
 
-        tiempo = time.time() - comienzo
-        tiempo = time.strftime("%H:%M:%S", time.gmtime(tiempo))
-        print ('Ha tardado en evaluar ', tiempo, 'segundos!')
+        print ('Ha tardado en evaluar ', calc_tiempo(comienzo), 'segundos!')
+    
+    print ('Fin del programa: ', calc_tiempo(comienzo), 'segundos!')
+    print("Gracias por utilizar nuestro programa")
 
 def readCommand( argv ):
     """
@@ -76,6 +75,10 @@ def readCommand( argv ):
     if len(otros) != 0:
         raise Exception('No se ha entendido este comando: ' + str(otros))
     return options
+def calc_tiempo(comienzo):
+    tiempo = time.time() - comienzo
+    tiempo = time.strftime("%H:%M:%S", time.gmtime(tiempo))
+    return tiempo
 
 if __name__ == '__main__':
     print('start')
