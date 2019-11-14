@@ -54,6 +54,17 @@ class Evaluador:
     def calinskiHarabasz(self, inst, labels):
         score = calinski_harabasz_score(inst, labels)
         return score
+
+
+    def jaccard(self, agrupacion):
+        temasR=[]
+        temasY=[]
+        for each in agrupacion:
+            temasY.append(each[3])
+            temasR.append(each[4])
+        score = jaccard_score(temasR,temasY)
+        print (score)
+        return score
     
     
     """

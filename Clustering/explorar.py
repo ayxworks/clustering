@@ -71,12 +71,14 @@ Post: Lista de instancia, cluster al cual ha sido agrupado y la distancia a su c
 """
 
 def agruparInstanciasPorCluster(path,instancias,numClus,instsAClasif): #instAClasificar debera ser posicion o id
+    vectoresTest = ut.cargar('/preproceso/test_tfidf')
+    temas = ut.cargar('lista_temas')
     centroides = clustersIteracion(path,instancias,numClus)
     agrupacion=[]
     cAct=0
     c=0;"Indice centroide"
     for inst in instsAClasif: #Recorrer instancias a clasificar
-        vecInst=0 #Coger el vector de la instancia TODO
+        vecInst=vectoresTest.vector[inst] #Coger el vector de la instancia TODO
         mindist = 999999
         for cent in centroides: #Por cada centroide...
             distancia = ut.calcularDistancia(cent,vecInst,1) #Buscar menor distancia manhattan centroide e instancia
@@ -89,7 +91,7 @@ def agruparInstanciasPorCluster(path,instancias,numClus,instsAClasif): #instACla
         iteraciones = ut.cargar(path)
         clusters = iteraciones[len(instancias) - numClus]; "Sabiendo la posicion se que cluster llevarme"
         tema= temaMasComunEnInstancia(clusters[cAct],vecInst); "Pasar instancias del cluster del cent, el id y vector de instAClasif"
-        temaReal = 0 #Sacar numero tema real a partir de el id de la instancia TODO
+        temaReal = temas[tema]
         agrupacion.append((inst,cent,tema, temaReal)) #Instancia, centroide, tema agrupado, tema real
 
 
@@ -99,14 +101,16 @@ def temaMasComunEnInstancia(instCluster,vecInst): #instCluster son posiciones, i
     "Recorrer instancias de cluster, coger las 10 mas cercanas a la instancia daba y devolver el maximo de los temas"
     i=1
     temas=[]
+    vectoresTrain=ut.cargar('/preproceso/train_tfidf')
+    datosTrain=ut.cargar('/preproceso/lista_articulos_train')
     j=0
     while j<121:
-        temas= temas+[(j,0)]
+        temas= temas+[(j,0)] #(TemaNumerico,Contador)
     instancias=[] #Lista de 10 instancias mas cercanas a la instancia test
     distancias=[] #Lista de distancias de instancias cluster a instancia test
 
     for instCl in instCluster: #Instancias del cluster
-        vecInstCl=0 #Pasar de pos a vector TODO
+        vecInstCl=vectoresTrain.vector[instCl]
         distancias.append(instCl,ut.calcularDistancia(vecInstCl,vecInst,2))#Coger la menor (Instancia cluster, distancia)
     while i>=10:
         actual = min(distancias, key = lambda t: t[1]) #Devuelve la tupla con la instancia del cluster y la distancia minima a la distancia a clasificar.
@@ -116,10 +120,10 @@ def temaMasComunEnInstancia(instCluster,vecInst): #instCluster son posiciones, i
 
     "Buscar tema mayor entre las 10 instancias y ese sera el de la instancia a clasificar."
     for posInst in instancias:
-        indTema = 0 #Acceder al indTema de la instancia each TODO
+        indTema = datosTrain.tema_numerico[posInst]
         t=0
         while t<121:
-            if t==indTema: #each[0] deberia ser la clase de la instancia
+            if t==indTema:
                 temas[t][1]+=1
                 t=121
             t+=1
