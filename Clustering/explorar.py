@@ -72,7 +72,7 @@ Post: Lista de instancia, cluster al cual ha sido agrupado y la distancia a su c
 
 def agruparInstanciasPorCluster(path,instancias,numClus,instsAClasif): #instAClasificar debera ser posicion o id
     vectoresTest = ut.cargar('/preproceso/test_tfidf')
-    temas = ut.cargar('lista_temas')
+    datosTest=ut.cargar('/preproceso/lista_articulos_train')
     centroides = clustersIteracion(path,instancias,numClus)
     agrupacion=[]
     cAct=0
@@ -91,7 +91,7 @@ def agruparInstanciasPorCluster(path,instancias,numClus,instsAClasif): #instACla
         iteraciones = ut.cargar(path)
         clusters = iteraciones[len(instancias) - numClus]; "Sabiendo la posicion se que cluster llevarme"
         tema= temaMasComunEnInstancia(clusters[cAct],vecInst); "Pasar instancias del cluster del cent, el id y vector de instAClasif"
-        temaReal = temas[tema]
+        temaReal = datosTest.tema_numerico[inst]
         agrupacion.append((inst,cent,tema, temaReal)) #Instancia, centroide, tema agrupado, tema real
 
 

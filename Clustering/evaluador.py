@@ -9,6 +9,7 @@ from sklearn.metrics import calinski_harabasz_score
 from sklearn.metrics import jaccard_score
 import math
 import util as ut
+import explorar as ex
 
 class Evaluador:
     
@@ -60,8 +61,8 @@ class Evaluador:
         temasR=[]
         temasY=[]
         for each in agrupacion:
-            temasY.append(each[3])
-            temasR.append(each[4])
+            temasY.append(each[2])
+            temasR.append(each[3])
         score = jaccard_score(temasR,temasY)
         print (score)
         return score
@@ -84,3 +85,12 @@ class Evaluador:
 """clust = ut.cargar('resultados\datosAL.txt')
 ev = Evaluador()
 ev.evaluar('resultados\dist.txt', clust)"""
+path='resultados\iteraciones.txt'
+instancias = 0 #TODO Vectores de todas las instancias
+numClus=3
+instsAClasif = 0 #TODO Posiciones de todas las nuevas instancias a clasificar
+agrupacion = ex.agruparInstanciasPorCluster(path,instancias,numClus,instsAClasif)
+for each in agrupacion:
+    print (each[2],each[3])
+ev = Evaluador()
+jaccardScore = ev.jaccard(agrupacion)
