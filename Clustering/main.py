@@ -19,11 +19,10 @@ def runClusteringPruebas(argumentos):
     ##########################################################################################
     if not argumentos.skip_clustering:
         print('2: Clustering')
-        tfidf = util.cargar(os.getcwd() + argumentos.crear_cluster)
+        vector_dataset = util.cargar(os.getcwd() + argumentos.crear_cluster)
         print('Se ha cargado los vectores tf-idf, del directorio: ' + argumentos.crear_cluster)
-        cl = clustering.Cluster(tfidf.vDocs)
+        cl = clustering.Cluster(vector_dataset)
         cl.clustering(argumentos.distancia)
-
         print ('Ha tardado en hacer el cluster jerarquico ', calc_tiempo(comienzo), 'segundos!')
     ##########################################################################################
     if not argumentos.skip_evaluacion:

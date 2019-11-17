@@ -90,9 +90,12 @@ class Cluster:
         i=0
         
         while i < len(self.clust):
-            centroide = ut.calcularCentro(self.clust[i], self.vect)
-            centroides[i] = centroide
-            i+=1
+            try:
+                centroide = ut.calcularCentro(self.clust[i], self.vect)
+                centroides[i] = centroide
+                i+=1
+            except IndexError:
+                continue
             
         return centroides
     
