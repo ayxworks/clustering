@@ -93,11 +93,6 @@ class Datos:
             self.articulo.titulo = cuerpo.text
 
     def tokenizacion(self, texto, bool_etiquetas = False):
-        """
-            Dado un texto parseado por beautifulSoup se anaden a la clase los tokens del articulo 
-            Pre: El texto a analizar
-            Post: Se crean los tokens para luego analizar y darles peso 
-        """
         """ crea la lista de palabras que analizaremos  """
         # quita digitos y puntuacion
         sin_num = texto.translate(string.digits)
@@ -131,21 +126,19 @@ class Datos:
                 raices.append(raiz.decode('utf-8', 'ignore'))
         return raices
 
-
 fichero_datos_vectores = ['datasets/dataset1.csv', 'datasets/dataset2.csv']
 
 class Tf_Idf:
     def __init__(self):
         self.tfidf = TfidfVectorizer(max_df=0.9)
-        self.vector = dict([])
+        self.vector = None
+        self.atributos = []
         #self.vDocs = []
 
-    """
-    genera un vector de tuplas pero nos da memory error porque forzamos el sparse array a completar los ceros y se llena la memoria virtual del ordenador
     def generar_vector_tupla_pesos(self, texto):
         vDocs = []
         listaVocab = dict([])
-        pesos = self.generar_vocab_npalabras(texto, listaVocab)
+        palabras, pesos = self.generar_vocab_npalabras(texto, listaVocab)
         matriz_completa = pesos.toarray()
         for articulo, fila in enumerate(matriz_completa):
             doc = list()
@@ -154,57 +147,33 @@ class Tf_Idf:
             vDocs.append(tuple(doc))
         self.vector = vDocs
         print("Lista de tuplas de vectores tf-idf generada")
-        print("Se han procesado " + str(len(vDocs)) + " instancias")
-    """
-    def generar_vector_tupla_pesos(self, texto):
-        """
-            Dado los datos se genera el espacio vectorial (dataset) y los pesos tf-idf de todos los documentos
-            Pre: El texto a analizar
-            Post: Se genera los tf-idf de todas las instancias
-        """
-        listaVocab = dict([])
-        palabras, pesos = self.generar_vocab_npalabras(texto, listaVocab)
-        array_pesos = pesos.toarray()
-        for documento, fila in enumerate(array_pesos):
-            self.vector[documento] = dict([])
-            for i, palabra in enumerate(palabras):
-                self.vector[documento][palabra] = array_pesos[documento][i]
-        print("Matriz de vectores tf-idf generada")
-        print("Se han procesado " + str(len(array_pesos)) + " instancias")
+        print("Se han procesado " + len(vDocs) + " instancias")
     
     def generar_vector_tupla_pesos_newInst(self, texto, listaVocab):
-        """
-            Dado los datos nuevos y el espacio vectorial (dataset) se generan los pesos tf-idf de todos los documentos
-            Pre: El texto a analizar y el espacio vectorial (todos los tokens)
-            Post: Se genera los tf-idf de todas las instancias
-        """
-        listaVocab = dict([])
+        vDocs = []
         palabras, pesos = self.generar_vocab_npalabras(texto, listaVocab)
-        array_pesos = pesos.toarray()
-        for documento, fila in enumerate(array_pesos):
-            self.vector[documento] = dict([])
-            for i, palabra in enumerate(palabras):
-                self.vector[documento][palabra] = pesos[documento][i]
-        print("Matriz de vectores tf-idf generada")
-        print("Se han procesado " + str(len(enumerate(pesos))) + " instancias nuevas")
+        matriz_completa = pesos.toarray()
+        for articulo, fila in enumerate(matriz_completa):
+            doc = list()
+            for i, palabra in enumerate(fila):
+                doc.append(matriz_completa[articulo][i])
+            vDocs.append(tuple(doc))
+        self.vector = vDocs
+        print("Lista de tuplas de vectores tf-idf generada")
 
     def generar_vocab_npalabras(self, docs, listaVocab):
-        """
-        Dados los documentos y un path se genera los tf-idf de todas las palabras que se incluyen en el articulo, titulo y cuerpo
-        Pre: Los documentos y el path para guardar todos los tokens totales (no se van a usar todos)
-        Post: Se guardan todos los tokens y se devuelve los pesos de cada token de cada instancia
-        """
         palabras_dicc = dict([])
         for i, doc in enumerate(docs):
             palabras_dicc[i] = ' '.join(doc.palabras.titulo + doc.palabras.cuerpo)
         listaVocab.update(palabras_dicc)
         util.guardar(os.getcwd()+"/preproceso/todas_las_palabras.txt" ,listaVocab)
         pesos = self.tfidf.fit_transform(listaVocab.values())
-        palabras = self.tfidf.get_feature_names()
+        self.vector = pesos
+        atributos = self.tfidf.get_feature_names()
+        self.atributos = atributos
         print("Espacio vectorial analizado y valores tf_idf calculados")
-        return palabras, pesos
+        return atributos, pesos
 
-    """ Para mirar la tabla ordenada y bonita (PRUEBAS)
     def print_tabla(self):
         idf_trans=TfidfTransformer(smooth_idf=True,use_idf=True)
         idf_trans.fit(self.vector)
@@ -212,69 +181,50 @@ class Tf_Idf:
         df_idf = pd.DataFrame(idf_trans.idf_, index=self.tfidf.get_feature_names(),columns=["idf_pesos"])
         # orden ascendente
         df_idf.sort_values(by=['idf_pesos'])
-    """
 
 class SelectorAtributos:
     def __init__(self,pesos,documentos):
         """ 
             escoge los atributos y se genera un vector del espacio vectorial de las palabras de los articulos
-            Pre: los pesos de tf_idf.vector y los documentos
-            Post: Se genera el dataset a evaluar, reduciendo el espacio vectorial a analizar a un 10%
+            :param pesos: los pesos de tf_idf.vector
+            :param docmuentos: lista de documentos
         """
         self.atributos = []
         self.espacio_vectorial = []
  
         self.elegirAtributos(pesos)
-        
         for atributos_doc in self.atributos:
             self.crear_dataset(pesos,documentos,atributos_doc)
 
     def elegirAtributos(self,pesos):
         """ 
             genera un vector reducido de atributos
-            Pre: los pesos de tf_idf.vector
-            Post: una lista ordenada de el par de atributos (atributo y peso)
+            :param pesos: los pesos de tf_idf.vector
+            :se crea: una lista ordenada de el par de atributos (atributo y peso)
         """
         atributos = set()
         tfidf_score = dict([])
-        for articulo, documento_scores in pesos.items():
+        # generate normal feature vector
+        for articulo, documento_scores in pesos.iteritems():
             mas = dict(sorted(documento_scores.items(), key=itemgetter(1), reverse=True)[:5])
             for palabra, score in mas.items():
                 if score > 0.0:
                     atributos.add(palabra)
                     tfidf_score[palabra] = score
-
         # reducir el vetor hasta un 10%
-        longitud = int(len(atributos) / 10)
+        longitud = len(atributos) / 10
         atributo_pareado = dict(sorted(tfidf_score.items(), key=itemgetter(1), reverse=True)[:longitud])
-        #self.atributos.append(sorted(atributos))
-        #print(sorted(atributos))
-        self.atributos.append(sorted(atributo_pareado))
+        self.atributos.append(sorted(atributos))
         util.guardar(os.getcwd()+"/preproceso/vocabulario.txt" ,self.atributos)
-        #self.atributos.append(sorted(atributo_pareado))
-        print("Se ha reducido el espacio vectorial en un 90%")
+        self.atributos.append(sorted(atributo_pareado))
 
     def crear_dataset(self,pesos,documentos,atributos_doc):
-        """
-            Dado la tabla de pesos, datos a analizar y atributos seleccionados, se crea una lista de tuplas para el calculo de distancias para generar un cluster
-            Pre: La tabla de pesos, los docmumentos a entrenar y los atributos seleccionados
-            Post: Se crea un dataset para el calculo de distancias y creacion de cluster
-        """
-        """ Funciona matriz de diccionario python
         dataset = dict([])
         for i, documento in enumerate(documentos):
             dataset[i] = []
             for atributo in atributos_doc:
                 dataset[i].vector.append(pesos[i][atributo])
         self.espacio_vectorial.append(dataset)
-        """
-        #cambiar a vector de tuplas
-        for i, documento in enumerate(documentos):
-            doc = list()
-            for atributo in atributos_doc:
-                doc.append(pesos[i][atributo])
-            self.espacio_vectorial.append(tuple(doc))
-        print("Lista de tuplas de vectores tf-idf generada")
 
 
 #######################################################################
@@ -284,11 +234,6 @@ def scrap_texto(texto_plano):
     return BeautifulSoup(texto_plano, "html.parser")
 
 def escanear_docs(directorio):
-    """
-        Dado un directorio se leen todos los archivos y se filtran los articulos
-        Pre: El directorio a examinar
-        Post: Los documentos parseados listos para python
-    """
     pares = dict([])
     documentos = []
     for fichero in os.listdir(directorio):
@@ -303,30 +248,20 @@ def escanear_docs(directorio):
 
         for articulo, reuter in pares.items():
             articulo.aumentar_lista_dicc(reuter)
-            documentos.append(articulo)  
+            documentos.append(articulo)  #!TODO falla aqui, no entiendo por que se anaden cosas
         print("Se ha terminado de examinar el fichero:", fichero)
     return documentos
 
 def crearListaTemasTotales(documentos):
-    """
-        Dadas las instancias genera una lista de todos los temas
-        Pre: Los documentos a analizar
-        Post: Se devuelve las etiquetas tema
-    """
     lista = set()
     lista.add("none")
     for doc in documentos:
         for tema in doc.temas:
             lista.add(tema)
-    #print(lista)
+    print(lista)
     return lista
 
 def shuffle_split(directorio):
-    """
-        Dado un directorio escanea los doccumentos, los barajea y los separa en 80-20
-        Pre: El directorio a escanear
-        Post: Los datos para entrenar y probar
-    """
     documentos = escanear_docs(directorio)
     random.shuffle(documentos)
     train_data = documentos[:int((len(documentos)+1)*.80)]
@@ -334,11 +269,6 @@ def shuffle_split(directorio):
     return train_data, test_data
 
 def preprocesar_train(directorio_ruta):
-    """
-        Dada una ruta de datos se genera el dataset de las instancias nuevas
-        Pre: El directorio de los datos
-        Post: La lista de instancias con tuplas de pesos tf-idf de cada instancia
-    """
     #directorio = 'datos'
     print('\nGenerando los vectores de las instancias')
     train, test = shuffle_split(directorio_ruta)
@@ -346,29 +276,16 @@ def preprocesar_train(directorio_ruta):
     print(len(lista))
     for doc in train:
         doc.asignarTemaNumerico(lista)
-    util.guardar(os.getcwd()+"/preproceso/lista_temas.txt", lista)
+    util.guardar(os.getcwd()+"/preproceso/lista_temas", lista)
     tfidf = Tf_Idf()
     tfidf.generar_vector_tupla_pesos(train)
-    selector = SelectorAtributos(tfidf.vector, train)
-    util.guardar(os.getcwd()+"/preproceso/lista_articulos_train.txt", train)
-    util.guardar(os.getcwd()+"/preproceso/lista_articulos_test.txt", test)
-    util.guardar(os.getcwd()+"/preproceso/train_tfidf.txt", selector.espacio_vectorial)
-    test_tfidf = Tf_Idf()
-    #documentos = escanear_docs(directorio)
-    #random.shuffle(documentos)
-    print("generar test tfidf")
-    test_tfidf.generar_vector_tupla_pesos(test)
-    selector_test = SelectorAtributos(test_tfidf.vector, test)
-    util.guardar(os.getcwd()+"/preproceso/test_tfidf.txt", selector_test.espacio_vectorial)
+    util.guardar(os.getcwd()+"/preproceso/lista_articulos_train", train)
+    util.guardar(os.getcwd()+"/preproceso/lista_articulos_test", test)
+    util.guardar(os.getcwd()+"/preproceso/train_tfidf", tfidf)
     print('Preproceso completado!')
-    return selector.espacio_vectorial, train
+    return tfidf, train
 
-def preprocesar_test(tfidf, train_path, newData, vocabulario_path, lista_temas_path):
-    """
-        Dado el dataset y las nuevas instancias se obtiene un nuevo dataset y sus pesos correspondientes en tf-idf
-        Pre: Los pesos tf-idf anteriores, el path de los datos anteriores, los datos nuevos, el path del nuevo dataset y el paz de todos los temas
-        Post: Se genera otro dataset tf-idf con las nuevas instancias
-    """
+def preprocesar_test(tfidf, newData, vocabulario_path, lista_temas_path):
     #directorio = 'testing'
     print('\nGenerando los vectores de las instancias')
     n_docs = len(tfidf)
@@ -377,20 +294,7 @@ def preprocesar_test(tfidf, train_path, newData, vocabulario_path, lista_temas_p
     util.guardar('new_lista_temas', lista)
     for doc in newData:
         doc.asignarTemaNumerico(lista)
-    train = util.cargar(train_path)
-    documentos = train + newData
     listaVocabulario = util.cargar(vocabulario_path)
     tfidf = tfidf.generar_vector_tupla_pesos_newInst(newData, listaVocabulario)
-    selector = SelectorAtributos(tfidf.vector,documentos)
-    util.guardar(os.getcwd()+"/preproceso/new_tfidf.txt", selector.espacio_vectorial)
     print('Preproceso completado!')
-    return selector.espacio_vectorial, n_docs, n_new_inst
-
-def instancia_articulo(indice, documentos):
-    """
-        Dada una instancia devuelve el articulo
-        Pre: El indice en el cluster y los documentos con los que se ha formado el cluster
-        Post: Se imprime por pantalla el articulo deseado
-    """
-    print(documentos[indice].articulo.titulo)
-    print(documentos[indice].articulo.cuerpo)
+    return tfidf, n_docs, n_new_inst

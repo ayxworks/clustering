@@ -112,24 +112,19 @@ class Datos:
 
         eng = [y for y in clase_etiqueta_art if wordnet.synsets(y)]
 
-        """
-        !!!PARA MAS ADELANTE OBTENER RAICES!!!
-        
-        # lemmatization
+        # lemmatizacion
         lemmas = []
-        lmtzr = WordNetLemmatizer()
+        lematizador = WordNetLemmatizer()
         for token in eng:
-            lemmas.append(lmtzr.lemmatize(token))
-        # stemming
-        stems = []
-        stemmer = PorterStemmer()
+            lemmas.append(lematizador.lemmatize(token))
+        # sacar raices
+        raices = []
+        saca_raices = PorterStemmer()
         for token in lemmas:
-            stem = stemmer.stem(token).encode('utf-8', 'ignore')
-            if len(stem) >= 4:
-                stems.append(stem)
-        return stems
-        """
-        return eng
+            raiz = saca_raices.stem(token).encode('utf-8', 'ignore')
+            if len(raiz) >= 4:
+                raices.append(raiz.decode('utf-8', 'ignore'))
+        return raices
 
 fichero_datos_vectores = ['datasets/dataset1.csv', 'datasets/dataset2.csv']
 
