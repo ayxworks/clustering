@@ -25,7 +25,7 @@ class Cluster:
         while i<len(vectores): 
             self.clust[i] = [i]
             i+=1
-        
+        print(len(vectores))
         "El diccionario donde se guardaran las distancias y el estado de los clusters"
         self.dist = {}
         self.dist[0] = copy(self.clust)
@@ -87,16 +87,11 @@ class Cluster:
     """
     def inicializarCentroides(self):
         centroides = ut.generarLista(len(self.clust))
-        i=0
-        
+        i=1
         while i < len(self.clust):
-            try:
-                centroide = ut.calcularCentro(self.clust[i], self.vect)
-                centroides[i] = centroide
-                i+=1
-            except IndexError:
-                continue
-            
+            centroide = ut.calcularCentro(self.clust[i], self.vect)
+            centroides[i] = centroide
+            i+=1
         return centroides
     
     

@@ -2,7 +2,7 @@ import os
 import sys
 import time
 import preproceso
-import util, clustering, evaluador
+import util, clustering#, evaluador
 
 def runClusteringPruebas(argumentos):
     import __main__

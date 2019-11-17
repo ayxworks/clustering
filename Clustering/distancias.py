@@ -21,7 +21,7 @@ class Distancias:
     """
     def inicializarDist(self, centroides):
         i = 0
-        j=1
+        j = 1
         solucion=()
 
         while i < len(centroides)-1:
@@ -29,6 +29,9 @@ class Distancias:
                 return solucion
             else:
                 while j < len(centroides):
+                    print(centroides)
+                    print(type(centroides))
+                    print(type(centroides[i]))
                     distAct = ut.calcularDistancia(centroides[i],centroides[j],self.coeficiente)
                     self.dist[i][j] = distAct
                     j+=1

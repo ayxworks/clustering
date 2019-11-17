@@ -20,7 +20,6 @@ def calcularCentro(lista, vectores):
         for each in lista: 
             vector = vectores[each]
             x+=vector[i]
-            print(i)
             
         x=x/len(lista)
         centro.append(x)

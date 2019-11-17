@@ -205,6 +205,7 @@ class SelectorAtributos:
         self.espacio_vectorial = []
  
         self.elegirAtributos(pesos)
+        
         for atributos_doc in self.atributos:
             self.crear_dataset(pesos,documentos,atributos_doc)
 
@@ -222,12 +223,15 @@ class SelectorAtributos:
                 if score > 0.0:
                     atributos.add(palabra)
                     tfidf_score[palabra] = score
+
         # reducir el vetor hasta un 10%
         longitud = int(len(atributos) / 10)
         atributo_pareado = dict(sorted(tfidf_score.items(), key=itemgetter(1), reverse=True)[:longitud])
-        self.atributos.append(sorted(atributos))
-        util.guardar(os.getcwd()+"/preproceso/vocabulario.txt" ,self.atributos)
+        #self.atributos.append(sorted(atributos))
+        #print(sorted(atributos))
         self.atributos.append(sorted(atributo_pareado))
+        util.guardar(os.getcwd()+"/preproceso/vocabulario.txt" ,self.atributos)
+        #self.atributos.append(sorted(atributo_pareado))
         print("Se ha reducido el espacio vectorial en un 90%")
 
     def crear_dataset(self,pesos,documentos,atributos_doc):
@@ -241,7 +245,7 @@ class SelectorAtributos:
         """
         #cambiar a vector de tuplas
         for i, documento in enumerate(documentos):
-            doc = []
+            doc = list()
             for atributo in atributos_doc:
                 doc.append(pesos[i][atributo])
             self.espacio_vectorial.append(tuple(doc))
@@ -297,13 +301,20 @@ def preprocesar_train(directorio_ruta):
     print(len(lista))
     for doc in train:
         doc.asignarTemaNumerico(lista)
-    util.guardar(os.getcwd()+"/preproceso/lista_temas", lista)
+    util.guardar(os.getcwd()+"/preproceso/lista_temas.txt", lista)
     tfidf = Tf_Idf()
     tfidf.generar_vector_tupla_pesos(train)
     selector = SelectorAtributos(tfidf.vector, train)
     util.guardar(os.getcwd()+"/preproceso/lista_articulos_train", train)
     util.guardar(os.getcwd()+"/preproceso/lista_articulos_test", test)
     util.guardar(os.getcwd()+"/preproceso/train_tfidf", selector.espacio_vectorial)
+    test_tfidf = Tf_Idf()
+    #documentos = escanear_docs(directorio)
+    #random.shuffle(documentos)
+    print("generar test tfidf")
+    test_tfidf.generar_vector_tupla_pesos(test)
+    selector_test = SelectorAtributos(test_tfidf.vector, test)
+    util.guardar(os.getcwd()+"/preproceso/test_tfidf", selector_test.espacio_vectorial)
     print('Preproceso completado!')
     return selector.espacio_vectorial, train
 
@@ -321,5 +332,6 @@ def preprocesar_test(tfidf, train_path, newData, vocabulario_path, lista_temas_p
     listaVocabulario = util.cargar(vocabulario_path)
     tfidf = tfidf.generar_vector_tupla_pesos_newInst(newData, listaVocabulario)
     selector = SelectorAtributos(tfidf.vector,documentos)
+    util.guardar(os.getcwd()+"/preproceso/test_tfidf", selector.espacio_vectorial)
     print('Preproceso completado!')
     return selector.espacio_vectorial, n_docs, n_new_inst
