@@ -52,7 +52,7 @@ Pre : El path debe existir, las instancias y el numero de clusters
 Post: Los centroides calculados
 """
 def clustersIteracion(path, instancias, numclus):
-    iteraciones = ut.cargar(path)
+    iteraciones = ut.cargar(os.getcwd()+path)
     clusters = iteraciones[len(instancias)-numclus]
     print(len(clusters))
     centroides = ut.generarLista(len(clusters))
@@ -75,6 +75,7 @@ def agruparInstanciasPorCluster(path,instancias,numClus,instsAClasif, vectoresTe
     #vectoresTest = ut.cargar('/preproceso/new_tfidf')
     #datosTest=ut.cargar('/preproceso/new_lista_articulos')
     centroides = clustersIteracion(path,instancias,numClus)
+    print("entra")
     agrupacion=[]
     cAct=0
     c=0;"Indice centroide"
@@ -89,7 +90,7 @@ def agruparInstanciasPorCluster(path,instancias,numClus,instsAClasif, vectoresTe
                 cAct=c#Indice del centroide/cluster dentro de la lista de centroides/clusters
             c+=1
 
-        iteraciones = ut.cargar(path)
+        iteraciones = ut.cargar(os.getcwd()+path)
         clusters = iteraciones[len(instancias) - numClus]; "Sabiendo la posicion se que cluster llevarme"
         tema= temaMasComunEnInstancia(clusters[cAct],vecInst); "Pasar instancias del cluster del cent, el id y vector de instAClasif"
         temaReal = datosTest.tema_numerico[inst]
@@ -100,6 +101,7 @@ def agruparInstanciasPorCluster(path,instancias,numClus,instsAClasif, vectoresTe
 
 def temaMasComunEnInstancia(instCluster,vecInst): #instCluster son posiciones, instancia es vector
     "Recorrer instancias de cluster, coger las 10 mas cercanas a la instancia daba y devolver el maximo de los temas"
+    print("entra2")
     i=1
     temas=[]
     vectoresTrain=ut.cargar(os.getcwd()+'/preproceso/train_tfidf')

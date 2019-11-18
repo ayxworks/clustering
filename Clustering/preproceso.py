@@ -365,7 +365,7 @@ def preprocesar_train(directorio_ruta):
     print('Preproceso completado!')
     return selector.espacio_vectorial, train
 
-def preprocesar_test(tfidf, train_path, newData, vocabulario_path, lista_temas_path):
+def preprocesar_test(tfidf, train_path, newData_path, vocabulario_path, lista_temas_path):
     """
         Dado el dataset y las nuevas instancias se obtiene un nuevo dataset y sus pesos correspondientes en tf-idf
         Pre: Los pesos tf-idf anteriores, el path de los datos anteriores, los datos nuevos, el path del nuevo dataset y el paz de todos los temas
@@ -373,16 +373,17 @@ def preprocesar_test(tfidf, train_path, newData, vocabulario_path, lista_temas_p
     """
     #directorio = 'testing'
     print('\nGenerando los vectores de las instancias')
+    newData = escanear_docs(newData_path)
     n_docs = len(tfidf)
     n_new_inst = len(newData)
-    lista = list(crearListaTemasTotales(newData) & util.cargar(lista_temas_path))
+    lista = list(crearListaTemasTotales(newData) & util.cargar(os.getcwd()+lista_temas_path))
     util.guardar('new_lista_temas', lista)
     for doc in newData:
         doc.asignarTemaNumerico(lista)
-    train = util.cargar(train_path)
+    train = util.cargar(os.getcwd()+train_path)
     documentos = train + newData
     util.guardar(os.getcwd()+"/preproceso/new_lista_articulos.txt", documentos)
-    listaVocabulario = util.cargar(vocabulario_path)
+    listaVocabulario = util.cargar(os.getcwd()+vocabulario_path)
     tfidf = tfidf.generar_vector_tupla_pesos_newInst(newData, listaVocabulario)
     selector = SelectorAtributos(tfidf.vector,documentos,"newInst")
     util.guardar(os.getcwd()+"/preproceso/new_tfidf.txt", selector.espacio_vectorial)

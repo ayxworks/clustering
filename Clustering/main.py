@@ -37,34 +37,32 @@ def runClusteringPruebas(argumentos):
     if not argumentos.skip_newInst:
         print('4: Anadir nuevas instancias')
         vector_dataset, ndocs, nNew = preproceso.preprocesar_test(argumentos.vector_tupla, argumentos.backup_datos, argumentos.newInst, "/preproceso/vocabulario.txt", "/preproceso/lista_temas.txt")
-        path = argumentos.vector_tupla
-        instancias = argumentos.backup_datos
-        numClus=3
+        path = '/resultados/iter.txt'
+        instancias = util.cargar(os.getcwd()+argumentos.vector_tupla)
         instsAClasif = [] 
         vectoresTest = util.cargar(os.getcwd()+'/preproceso/new_tfidf')
         datosTest=util.cargar(os.getcwd()+'/preproceso/new_lista_articulos')
-        i=1
-        while i < nNew+1:
-            instsAClasif.append(ndocs+i)
-        agrupacion = explorar.agruparInstanciasPorCluster(path,instancias,numClus,instsAClasif, vectoresTest, datosTest)
+        list(range(ndocs, nNew+1))
+        agrupacion = explorar.agruparInstanciasPorCluster(path,instancias,3,instsAClasif, vectoresTest, datosTest)
         for each in agrupacion:
             print (each[2],each[3])
         print ('Ha tardado en anadir una nueva instancia ', calc_tiempo(comienzo), 'segundos!')
     ##########################################################################################
     if not argumentos.skip_test:
-        print('5: Anadir nuevas instancias')
-        path = argumentos.vector_tupla
-        instancias = argumentos.backup_datos
-        numClus=3
-        instsAClasif = [] 
-        vectoresTest = util.cargar(os.getcwd()+'/preproceso/test_tfidf')
-        datosTest=util.cargar(argumentos.backup_datos_test)
-        i=1
-        while i < nNew+1:
-            instsAClasif.append(ndocs+i)
-        agrupacion = explorar.agruparInstanciasPorCluster(path,instancias,numClus,instsAClasif, vectoresTest, datosTest)
+        print('5: Anadir nuevas instancias del conjunto separado test')
+        path = '/resultados/iter.txt'
+        instancias = util.cargar(os.getcwd()+argumentos.vector_tupla)
+        vectoresTest = util.cargar(os.getcwd()+'/preproceso/test_tfidf.txt')
+        datosTest=util.cargar(os.getcwd()+argumentos.backup_datos_test)
+        ndocs = len(instancias)
+        nNew = len(datosTest) +1
+        print("213")
+        instsAClasif = list(range(ndocs, nNew))
+        agrupacion = explorar.agruparInstanciasPorCluster(path,instancias,3,instsAClasif, vectoresTest, datosTest)
+        print("asd")
         for each in agrupacion:
             print (each[2],each[3])
+            print("fafa")
         print ('Ha tardado en anadir una nueva instancia ', calc_tiempo(comienzo), 'segundos!')
     
     print ('\nFin del programa: ', calc_tiempo(comienzo), 'segundos!')
