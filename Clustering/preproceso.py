@@ -279,6 +279,26 @@ class SelectorAtributos:
         print("\nLista de tuplas de vectores " + name+  "_tf-idf generada")
         print("Se han procesado " + str(len(self.espacio_vectorial)) + " instancias")
 
+    def crear_dataset_especifico(self,pesos,documentos, name, path_vocabulario):
+        """
+            Dado la tabla de pesos, datos a analizar y atributos seleccionados, se crea una lista de tuplas para el calculo de distancias para generar un cluster
+            Pre: La tabla de pesos, los docmumentos a entrenar y los atributos seleccionados
+            Post: Se crea un dataset para el calculo de distancias y creacion de cluster
+        """
+        #cambiar a vector de tuplas
+        self.atributos = util.cargar(os.getcwd()+path_vocabulario)
+        for atributos_doc in self.atributos:
+            for i, documento in enumerate(documentos):
+                doc = list()
+                for atributo in atributos_doc:
+                    try:
+                        doc.append(pesos[i][atributo])
+                    except KeyError as e:
+                        doc.append(0.0)
+                self.espacio_vectorial.append(tuple(doc))
+        print("\nLista de tuplas de vectores " + name+  "_tf-idf generada")
+        print("Se han procesado " + str(len(self.espacio_vectorial)) + " instancias")
+
 
 #######################################################################
 #            funciones del preproceso, cargar los archivos            #
@@ -356,16 +376,44 @@ def preprocesar_train(directorio_ruta):
     util.guardar(os.getcwd()+"/preproceso/lista_articulos_train.txt", train)
     util.guardar(os.getcwd()+"/preproceso/lista_articulos_test.txt", test)
     util.guardar(os.getcwd()+"/preproceso/train_tfidf.txt", selector.espacio_vectorial)
-    #documentos = escanear_docs(directorio)
-    #random.shuffle(documentos)
-    print("generar test tfidf")
-    tfidf.generar_vector_tupla_pesos(test)
-    selector_test = SelectorAtributos(tfidf.vector, test, "test")
-    util.guardar(os.getcwd()+"/preproceso/test_tfidf.txt", selector_test.espacio_vectorial)
+    util.guardar(os.getcwd()+"/preproceso/raw_tfidf", tfidf)
     print('Preproceso completado!')
     return selector.espacio_vectorial, train
 
-def preprocesar_test(tfidf, train_path, newData_path, vocabulario_path, lista_temas_path):
+def preprocesar_test(tfidf_path, train_path, test_path, vocabulario_path, lista_temas_path):
+    """
+        Dado el dataset y las nuevas instancias se obtiene un nuevo dataset y sus pesos correspondientes en tf-idf
+        Pre: Los pesos tf-idf anteriores, el path de los datos anteriores, los datos nuevos, el path del nuevo dataset y el paz de todos los temas
+        Post: Se genera otro dataset tf-idf con las nuevas instancias
+    """
+    print("generar test tfidf")
+    test = util.cargar(os.getcwd()+ test_path)
+    tfidf = util.cargar(os.getcwd()+ tfidf_path)
+    tfidf.generar_vector_tupla_pesos(test)
+    selector_test = SelectorAtributos(tfidf.vector, test, "test")
+    selector_test.crear_dataset_especifico(tfidf.vector, test, "test", vocabulario_path)
+    util.guardar(os.getcwd()+"/preproceso/test_tfidf.txt", selector_test.espacio_vectorial)
+    print('\nGenerando los vectores de las instancias')
+    n_docs = len(tfidf)
+    n_new_inst = len(test)
+    lista = list(crearListaTemasTotales(test) & util.cargar(os.getcwd()+lista_temas_path))
+    util.guardar('all_lista_temas', lista)
+    for doc in test:
+        doc.asignarTemaNumerico(lista)
+
+    """
+    train = util.cargar(os.getcwd()+train_path)
+    documentos = train + test
+    util.guardar(os.getcwd()+"/preproceso/all_lista_articulos.txt", documentos)
+    listaVocabulario = util.cargar(os.getcwd()+vocabulario_path)
+    tfidf = tfidf.generar_vector_tupla_pesos_newInst(test, listaVocabulario)
+    selector = SelectorAtributos(tfidf.vector,documentos,"allInst")
+    util.guardar(os.getcwd()+"/preproceso/all_tfidf.txt", selector.espacio_vectorial)
+    """
+    print('Preproceso completado!')
+    return selector_test.espacio_vectorial, n_docs, n_new_inst
+
+def preprocesar_newInst(tfidf, train_path, newData_path, vocabulario_path, lista_temas_path):
     """
         Dado el dataset y las nuevas instancias se obtiene un nuevo dataset y sus pesos correspondientes en tf-idf
         Pre: Los pesos tf-idf anteriores, el path de los datos anteriores, los datos nuevos, el path del nuevo dataset y el paz de todos los temas

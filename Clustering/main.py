@@ -36,35 +36,35 @@ def runClusteringPruebas(argumentos):
     ##########################################################################################
     if not argumentos.skip_newInst:
         print('4: Anadir nuevas instancias')
-        vector_dataset, ndocs, nNew = preproceso.preprocesar_test(argumentos.vector_tupla, argumentos.backup_datos, argumentos.newInst, "/preproceso/vocabulario.txt", "/preproceso/lista_temas.txt")
-        path = '/resultados/iter.txt'
+        vectoresTest, ndocs, nNew = preproceso.preprocesar_newInst('/preproceso/raw_tfidf', argumentos.backup_datos, argumentos.newInst, "/preproceso/vocabulario_train.txt", "/preproceso/lista_temas.txt")
         instancias = util.cargar(os.getcwd()+argumentos.vector_tupla)
-        instsAClasif = [] 
-        vectoresTest = util.cargar(os.getcwd()+'/preproceso/new_tfidf')
-        datosTest=util.cargar(os.getcwd()+'/preproceso/new_lista_articulos')
-        list(range(ndocs, nNew+1))
-        agrupacion = explorar.agruparInstanciasPorCluster(path,instancias,3,instsAClasif, vectoresTest, datosTest)
+        instsAClasif = list(range(0, nNew))
+        datosTest=util.cargar(os.getcwd()+'/preproceso/lista_articulos_test.txt')
+        ndocs = len(instancias)
+        nNew = len(instancias)+ len(datosTest) +1
+        instsAClasif = list(range(ndocs, nNew))
+        agrupacion = explorar.agruparInstanciasPorCluster('/resultados/iter.txt',instancias,3,instsAClasif, vectoresTest, datosTest)
         for each in agrupacion:
             print (each[2],each[3])
         print ('Ha tardado en anadir una nueva instancia ', calc_tiempo(comienzo), 'segundos!')
     ##########################################################################################
     if not argumentos.skip_test:
         print('5: Anadir nuevas instancias del conjunto separado test')
-        path = '/resultados/iter.txt'
+        vector_dataset_test, ndocs, nNew = preproceso.preprocesar_test('/preproceso/raw_tfidf', argumentos.backup_datos, argumentos.backup_datos_test, "/preproceso/vocabulario_train.txt", "/preproceso/lista_temas.txt")
         instancias = util.cargar(os.getcwd()+argumentos.vector_tupla)
         vectoresTest = util.cargar(os.getcwd()+'/preproceso/test_tfidf.txt')
         datosTest=util.cargar(os.getcwd()+argumentos.backup_datos_test)
-        ndocs = len(instancias)
-        nNew = len(datosTest) +1
-        print("213")
-        instsAClasif = list(range(ndocs, nNew))
-        agrupacion = explorar.agruparInstanciasPorCluster(path,instancias,3,instsAClasif, vectoresTest, datosTest)
-        print("asd")
+        instsAClasif = list(range(0, nNew))
+        agrupacion = explorar.agruparInstanciasPorCluster('/resultados/iter.txt',instancias,3,instsAClasif, vector_dataset_test, datosTest)
         for each in agrupacion:
             print (each[2],each[3])
-            print("fafa")
         print ('Ha tardado en anadir una nueva instancia ', calc_tiempo(comienzo), 'segundos!')
-    
+    ##########################################################################################
+    if not argumentos.get_instance:
+        documentos = util.cargar(os.getcwd()+argumentos.backup_datos)
+        preproceso.instancia_articulo(argumentos.indice_instancia, documentos)
+        print ('Se ha tardado en buscar la instancia ', calc_tiempo(comienzo), 'segundos!')
+
     print ('\nFin del programa: ', calc_tiempo(comienzo), 'segundos!')
     print("Gracias por utilizar nuestro programa\n")
 
@@ -87,6 +87,10 @@ def readCommand( argv ):
     parser = OptionParser(usageStr)
     parser.add_option('-z', '--testing', action='store', dest='testing',
                       help='Pruebas', default='lista_articulos_test')
+    parser.add_option('-g','--get_instance', action='store_false', dest='get_instance',
+                      help='Coge la instancia del indice seleccionado e imprime por pantalla', default=True)
+    parser.add_option('-i', '--indice_instancia', action='store', dest='indice_instancia',
+                      help='Se elige el indice de una instancia', default=0)
     parser.add_option('-r','--skip_preproceso', action='store_false', dest='skip_preproceso',
                       help='Flag para saltarse el preproceso', default=True)
     parser.add_option('-s', '--skip_clustering', action='store_false', dest='skip_clustering',
@@ -101,7 +105,7 @@ def readCommand( argv ):
                       help='Elegir un cluster si ya hay una estructura', default='/resultados/datosAL.txt')
     parser.add_option('-e', '--evaluacion', dest='evaluacion',
                       help='Se hace la evaluacion del cluster', default='/resultados/dist.txt')
-    parser.add_option('-i', '--iteraciones', dest='iteraciones',
+    parser.add_option('-y', '--iteraciones', dest='iteraciones',
                       help='Path de las iteraciones del cluster', default='/resultados/iteraciones.txt')
     parser.add_option('-b', '--backup_datos', dest='backup_datos',
                       help='Path del archivo donde se guardan las instancias', default='/preproceso/lista_articulos_train.txt')

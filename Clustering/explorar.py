@@ -79,7 +79,9 @@ def agruparInstanciasPorCluster(path,instancias,numClus,instsAClasif, vectoresTe
     agrupacion=[]
     cAct=0
     c=0;"Indice centroide"
+    print(instsAClasif)
     for inst in instsAClasif: #Recorrer instancias a clasificar
+        print(inst)
         vecInst=vectoresTest[inst] #Coger el vector de la instancia TODO
         mindist = 999999
         for cent in centroides: #Por cada centroide...
