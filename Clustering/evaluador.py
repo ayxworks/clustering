@@ -19,7 +19,6 @@ class Evaluador:
         Post: Un archivo en resultados\score.txt donde se recopilan todos los resultados
     """
     def evaluar(self, path, instancias):
-        res = ut.cargar(path)
         labels = ut.generarLista(len(instancias))
         i = 0
         scoreMax = 99999999999

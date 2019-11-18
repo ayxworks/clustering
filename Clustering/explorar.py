@@ -6,6 +6,7 @@ Created on Sat Oct 26 18:40:07 2019
 """
 
 import util as ut
+import os
 
 
 """
@@ -101,8 +102,8 @@ def temaMasComunEnInstancia(instCluster,vecInst): #instCluster son posiciones, i
     "Recorrer instancias de cluster, coger las 10 mas cercanas a la instancia daba y devolver el maximo de los temas"
     i=1
     temas=[]
-    vectoresTrain=ut.cargar('/preproceso/train_tfidf')
-    datosTrain=ut.cargar('/preproceso/lista_articulos_train')
+    vectoresTrain=ut.cargar(os.getcwd()+'/preproceso/train_tfidf')
+    datosTrain=ut.cargar(os.getcwd()+'/preproceso/lista_articulos_train')
     j=0
     while j<121:
         temas= temas+[(j,0)] #(TemaNumerico,Contador)

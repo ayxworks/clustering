@@ -28,8 +28,8 @@ def runClusteringPruebas(argumentos):
     if not argumentos.skip_evaluacion:
         print('3: Evaluando')
         ev = evaluador.Evaluador()
-        path = argumentos.evaluation
-        instancias = argumentos.vector_tupla
+        path = util.cargar(os.getcwd()+argumentos.evaluacion)
+        instancias =  util.cargar(os.getcwd()+argumentos.vector_tupla)
         ev.evaluar(path, instancias)
         print ('Ha tardado en evaluar ', calc_tiempo(comienzo), 'segundos!')    
     
@@ -41,8 +41,8 @@ def runClusteringPruebas(argumentos):
         instancias = argumentos.backup_datos
         numClus=3
         instsAClasif = [] 
-        vectoresTest = util.cargar('/preproceso/new_tfidf')
-        datosTest=util.cargar('/preproceso/new_lista_articulos')
+        vectoresTest = util.cargar(os.getcwd()+'/preproceso/new_tfidf')
+        datosTest=util.cargar(os.getcwd()+'/preproceso/new_lista_articulos')
         i=1
         while i < nNew+1:
             instsAClasif.append(ndocs+i)
@@ -57,7 +57,7 @@ def runClusteringPruebas(argumentos):
         instancias = argumentos.backup_datos
         numClus=3
         instsAClasif = [] 
-        vectoresTest = util.cargar('/preproceso/test_tfidf')
+        vectoresTest = util.cargar(os.getcwd()+'/preproceso/test_tfidf')
         datosTest=util.cargar(argumentos.backup_datos_test)
         i=1
         while i < nNew+1:
