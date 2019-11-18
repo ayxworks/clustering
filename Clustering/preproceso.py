@@ -397,7 +397,7 @@ def preprocesar_test(tfidf_path, train_path, test_path, vocabulario_path, lista_
     n_docs = len(tfidf.vector)
     n_new_inst = len(test)
     lista = list(crearListaTemasTotales(test) & set(util.cargar(os.getcwd()+lista_temas_path)))
-    util.guardar('all_lista_temas', lista)
+    util.guardar('/preproceso/all_lista_temas', lista)
     for doc in test:
         doc.asignarTemaNumerico(lista)
 
@@ -425,7 +425,7 @@ def preprocesar_newInst(tfidf_path, train_path, newData_path, vocabulario_path, 
     #tfidf = util.cargar(os.getcwd()+ tfidf_path)
     n_new_inst = len(newData)
     lista = list(crearListaTemasTotales(newData) & set(util.cargar(os.getcwd()+lista_temas_path)))
-    util.guardar('new_lista_temas', lista)
+    util.guardar('/preproceso/new_lista_temas', lista)
     for doc in newData:
         doc.asignarTemaNumerico(lista)
     train = util.cargar(os.getcwd()+train_path)
