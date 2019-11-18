@@ -19,8 +19,8 @@ def runClusteringPruebas(argumentos):
     ##########################################################################################
     if not argumentos.skip_clustering:
         print('2: Clustering')
-        vector_dataset = util.cargar(os.getcwd() + argumentos.crear_cluster)
-        print('Se ha cargado los vectores tf-idf, del directorio: ' + argumentos.crear_cluster)
+        vector_dataset = util.cargar(os.getcwd() + argumentos.vector_tupla)
+        print('Se ha cargado los vectores tf-idf, del directorio: ' + argumentos.vector_tupla)
         cl = clustering.Cluster(vector_dataset)
         cl.clustering(argumentos.distancia)
         print ('Ha tardado en hacer el cluster jerarquico ', calc_tiempo(comienzo), 'segundos!')
@@ -28,14 +28,16 @@ def runClusteringPruebas(argumentos):
     if not argumentos.skip_evaluacion:
         print('3: Evaluando')
         ev = evaluador.Evaluador()
-        jaccardScore = ev.jaccard(agrupacion)
+        path = argumentos.evaluation
+        instancias = argumentos.vector_tupla
+        ev.evaluar(path, instancias)
         print ('Ha tardado en evaluar ', calc_tiempo(comienzo), 'segundos!')    
     
     ##########################################################################################
     if not argumentos.skip_newInst:
         print('4: Anadir nuevas instancias')
-        vector_dataset, ndocs, nNew = preproceso.preprocesar_test(argumentos.crear_cluster, argumentos.backup_datos, argumentos.newInst, "/preproceso/vocabulario.txt", "/preproceso/lista_temas.txt")
-        path = argumentos.crear_cluster
+        vector_dataset, ndocs, nNew = preproceso.preprocesar_test(argumentos.vector_tupla, argumentos.backup_datos, argumentos.newInst, "/preproceso/vocabulario.txt", "/preproceso/lista_temas.txt")
+        path = argumentos.vector_tupla
         instancias = argumentos.backup_datos
         numClus=3
         instsAClasif = [] 
@@ -51,7 +53,7 @@ def runClusteringPruebas(argumentos):
     ##########################################################################################
     if not argumentos.skip_test:
         print('5: Anadir nuevas instancias')
-        path = argumentos.crear_cluster
+        path = argumentos.vector_tupla
         instancias = argumentos.backup_datos
         numClus=3
         instsAClasif = [] 
@@ -109,7 +111,7 @@ def readCommand( argv ):
                       help='Path del archivo donde se guardan las instancias para test', default='/preproceso/lista_articulos_test.txt')
     parser.add_option('-p', '--preproceso', dest='preproceso',
                       help='Path de los textos', default='datos')
-    parser.add_option('-c', '--crear_cluster', action='store', dest='crear_cluster',
+    parser.add_option('-c', '--vector_tupla', action='store', dest='vector_tupla',
                       help='Path de los vectores para hacer el cluster', default='/preproceso/train_tfidf.txt')
     parser.add_option('-n', '--newInst', action='store', dest='newInst',
                       help='Para añadir nuevas instancias al cluster', default='/test/new')
