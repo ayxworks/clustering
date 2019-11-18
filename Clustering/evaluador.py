@@ -18,7 +18,7 @@ class Evaluador:
         Pre: El path donde se encuentra la estructura de datos con el clustering y la lista de vectores
         Post: Un archivo en resultados\score.txt donde se recopilan todos los resultados
     """
-    def evaluar(self, path, instancias):
+    def evaluar(self, res, instancias):
         labels = ut.generarLista(len(instancias))
         i = 0
         scoreMax = 99999999999
