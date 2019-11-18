@@ -32,9 +32,11 @@ def runClusteringPruebas(argumentos):
     
     ##########################################################################################
     if not argumentos.skip_newInst:
-        print('4: Evaluando')
-
-        print ('Ha tardado en evaluar ', calc_tiempo(comienzo), 'segundos!')
+        print('4: Anadir nuebba instancia')
+        vector_dataset, ndocs, nNew = preproceso.preprocesar_test(argumentos.crear_cluster, "/preproceso/lista_articulos_train.txt", argumentos.newInst, "/preproceso/vocabulario.txt", "/preproceso/lista_temas.txt"):
+        cl = clustering.Cluster(vector_dataset)
+        cl.clustering(argumentos.distancia)
+        print ('Ha tardado en anadir una nueva instancia ', calc_tiempo(comienzo), 'segundos!')
     
     print ('Fin del programa: ', calc_tiempo(comienzo), 'segundos!')
     print("Gracias por utilizar nuestro programa")

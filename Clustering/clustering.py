@@ -87,7 +87,7 @@ class Cluster:
     """
     def inicializarCentroides(self):
         centroides = ut.generarLista(len(self.clust))
-        i=1
+        i=0
         while i < len(self.clust):
             centroide = ut.calcularCentro(self.clust[i], self.vect)
             centroides[i] = centroide
