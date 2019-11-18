@@ -36,7 +36,7 @@ class Evaluador:
 
                 if score<scoreMax: 
                     scoreMax = score
-                    agrupF = len(agrup)-(i+1)
+                    agrupF = len(agrup)
                 
             i+=1
         
