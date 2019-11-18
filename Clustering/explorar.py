@@ -70,15 +70,15 @@ Pre:El path debe existir, las instancias y el numero de clusters
 Post: Lista de instancia, cluster al cual ha sido agrupado y la distancia a su centroide.
 """
 
-def agruparInstanciasPorCluster(path,instancias,numClus,instsAClasif): #instAClasificar debera ser posicion o id
-    vectoresTest = ut.cargar('/preproceso/test_tfidf')
-    datosTest=ut.cargar('/preproceso/lista_articulos_train')
+def agruparInstanciasPorCluster(path,instancias,numClus,instsAClasif, vectoresTest, datosTest): #instAClasificar debera ser posicion o id
+    #vectoresTest = ut.cargar('/preproceso/new_tfidf')
+    #datosTest=ut.cargar('/preproceso/new_lista_articulos')
     centroides = clustersIteracion(path,instancias,numClus)
     agrupacion=[]
     cAct=0
     c=0;"Indice centroide"
     for inst in instsAClasif: #Recorrer instancias a clasificar
-        vecInst=vectoresTest.vector[inst] #Coger el vector de la instancia TODO
+        vecInst=vectoresTest[inst] #Coger el vector de la instancia TODO
         mindist = 999999
         for cent in centroides: #Por cada centroide...
             distancia = ut.calcularDistancia(cent,vecInst,1) #Buscar menor distancia manhattan centroide e instancia

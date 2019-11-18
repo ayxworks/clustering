@@ -99,7 +99,7 @@ class Evaluador:
 """clust = [(1,3),(1,4),(2,2),(5,2),(5,1),(7,2)]
 ev = Evaluador()
 ev.evaluar('resultados\dist.txt', clust)"""
-
+"""
 path='resultados\iteraciones.txt'
 instancias = 0 #TODO Vectores de todas las instancias
 numClus=3
@@ -109,3 +109,4 @@ for each in agrupacion:
     print (each[2],each[3])
 ev = Evaluador()
 jaccardScore = ev.jaccard(agrupacion)
+"""

@@ -2,7 +2,7 @@ import os
 import sys
 import time
 import preproceso
-import util, clustering#, evaluador
+import util, clustering, evaluador, explorar
 
 def runClusteringPruebas(argumentos):
     import __main__
@@ -27,19 +27,46 @@ def runClusteringPruebas(argumentos):
     ##########################################################################################
     if not argumentos.skip_evaluacion:
         print('3: Evaluando')
-
+        ev = evaluador.Evaluador()
+        jaccardScore = ev.jaccard(agrupacion)
         print ('Ha tardado en evaluar ', calc_tiempo(comienzo), 'segundos!')    
     
     ##########################################################################################
     if not argumentos.skip_newInst:
-        print('4: Anadir nuebba instancia')
-        vector_dataset, ndocs, nNew = preproceso.preprocesar_test(argumentos.crear_cluster, "/preproceso/lista_articulos_train.txt", argumentos.newInst, "/preproceso/vocabulario.txt", "/preproceso/lista_temas.txt")
-        cl = clustering.Cluster(vector_dataset)
-        cl.clustering(argumentos.distancia)
+        print('4: Anadir nuevas instancias')
+        vector_dataset, ndocs, nNew = preproceso.preprocesar_test(argumentos.crear_cluster, argumentos.backup_datos, argumentos.newInst, "/preproceso/vocabulario.txt", "/preproceso/lista_temas.txt")
+        path = argumentos.crear_cluster
+        instancias = argumentos.backup_datos
+        numClus=3
+        instsAClasif = [] 
+        vectoresTest = util.cargar('/preproceso/new_tfidf')
+        datosTest=util.cargar('/preproceso/new_lista_articulos')
+        i=1
+        while i < nNew+1:
+            instsAClasif.append(ndocs+i)
+        agrupacion = explorar.agruparInstanciasPorCluster(path,instancias,numClus,instsAClasif, vectoresTest, datosTest)
+        for each in agrupacion:
+            print (each[2],each[3])
+        print ('Ha tardado en anadir una nueva instancia ', calc_tiempo(comienzo), 'segundos!')
+    ##########################################################################################
+    if not argumentos.skip_test:
+        print('5: Anadir nuevas instancias')
+        path = argumentos.crear_cluster
+        instancias = argumentos.backup_datos
+        numClus=3
+        instsAClasif = [] 
+        vectoresTest = util.cargar('/preproceso/test_tfidf')
+        datosTest=util.cargar(argumentos.backup_datos_test)
+        i=1
+        while i < nNew+1:
+            instsAClasif.append(ndocs+i)
+        agrupacion = explorar.agruparInstanciasPorCluster(path,instancias,numClus,instsAClasif, vectoresTest, datosTest)
+        for each in agrupacion:
+            print (each[2],each[3])
         print ('Ha tardado en anadir una nueva instancia ', calc_tiempo(comienzo), 'segundos!')
     
-    print ('Fin del programa: ', calc_tiempo(comienzo), 'segundos!')
-    print("Gracias por utilizar nuestro programa")
+    print ('\nFin del programa: ', calc_tiempo(comienzo), 'segundos!')
+    print("Gracias por utilizar nuestro programa\n")
 
 def readCommand( argv ):
     """
@@ -58,10 +85,6 @@ def readCommand( argv ):
                 python main.py -h
     """
     parser = OptionParser(usageStr)
-    parser.add_option('-p', '--preproceso', dest='preproceso',
-                      help='Se hace el preproceso de textos', default='datos')
-    parser.add_option('-c', '--crear_cluster', action='store', dest='crear_cluster',
-                      help='Se crea el cluster y se calculan las distancias', default='/preproceso/train_tfidf')
     parser.add_option('-z', '--testing', action='store', dest='testing',
                       help='Pruebas', default='lista_articulos_test')
     parser.add_option('-r','--skip_preproceso', action='store_false', dest='skip_preproceso',
@@ -72,10 +95,22 @@ def readCommand( argv ):
                       help='Flag para saltarse la evaluacion', default=True)
     parser.add_option('-u', '--skip_newInst', action='store_false', dest='skip_newInst',
                       help='Flag para saltarse el apartado de anadir nuevas instancias', default=True)
+    parser.add_option('-w', '--skip_test', action='store_false', dest='skip_test',
+                      help='Flag para saltarse el apartado de anadir instancias del test que no estan en el cluster', default=True)
     parser.add_option('-a', '--asignar_cluster', dest='asignar_cluster',
                       help='Elegir un cluster si ya hay una estructura', default='/resultados/datosAL.txt')
     parser.add_option('-e', '--evaluation', dest='evaluation',
                       help='Se hace la evaluacion del cluster', default='/resultados/dist.txt')
+    parser.add_option('-i', '--iteraciones', dest='iteraciones',
+                      help='Path de las iteraciones del cluster', default='/resultados/iteraciones.txt')
+    parser.add_option('-b', '--backup_datos', dest='backup_datos',
+                      help='Path del archivo donde se guardan las instancias', default='/preproceso/lista_articulos_train.txt')
+    parser.add_option('-v', '--backup_datos_test', dest='backup_datos_test',
+                      help='Path del archivo donde se guardan las instancias para test', default='/preproceso/lista_articulos_test.txt')
+    parser.add_option('-p', '--preproceso', dest='preproceso',
+                      help='Path de los textos', default='datos')
+    parser.add_option('-c', '--crear_cluster', action='store', dest='crear_cluster',
+                      help='Path de los vectores para hacer el cluster', default='/preproceso/train_tfidf.txt')
     parser.add_option('-n', '--newInst', action='store', dest='newInst',
                       help='Para añadir nuevas instancias al cluster', default='/test/new')
     parser.add_option('-d', '--distancia', action='store', dest='distancia',

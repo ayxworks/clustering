@@ -29,10 +29,6 @@ class Distancias:
                 return solucion
             else:
                 while j < len(centroides):
-                    print(centroides)
-                    print("centroides es de tipo:" + str(type(centroides)))
-                    print("centroides[i] es de tipo:" + str(type(centroides[i])))
-                    print("Cuando centroides[i] debia ser una tupla y esta parte del codigo no ha cambiado")
                     distAct = ut.calcularDistancia(centroides[i],centroides[j],self.coeficiente)
                     self.dist[i][j] = distAct
                     j+=1
