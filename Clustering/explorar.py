@@ -75,11 +75,9 @@ def agruparInstanciasPorCluster(path,instancias,numClus,instsAClasif, vectoresTe
     #vectoresTest = ut.cargar('/preproceso/new_tfidf')
     #datosTest=ut.cargar('/preproceso/new_lista_articulos')
     centroides = clustersIteracion(path,instancias,numClus)
-    print("entra")
     agrupacion=[]
     cAct=0
     c=0;"Indice centroide"
-    print(instsAClasif)
     for inst in instsAClasif: #Recorrer instancias a clasificar
         print(inst)
         vecInst=vectoresTest[inst] #Coger el vector de la instancia TODO
@@ -103,11 +101,10 @@ def agruparInstanciasPorCluster(path,instancias,numClus,instsAClasif, vectoresTe
 
 def temaMasComunEnInstancia(instCluster,vecInst): #instCluster son posiciones, instancia es vector
     "Recorrer instancias de cluster, coger las 10 mas cercanas a la instancia daba y devolver el maximo de los temas"
-    print("entra2")
     i=1
     temas=[]
-    vectoresTrain=ut.cargar(os.getcwd()+'/preproceso/train_tfidf')
-    datosTrain=ut.cargar(os.getcwd()+'/preproceso/lista_articulos_train')
+    vectoresTrain=ut.cargar(os.getcwd()+'/preproceso/train_tfidf.txt')
+    datosTrain=ut.cargar(os.getcwd()+'/preproceso/lista_articulos_train.txt')
     j=0
     while j<121:
         temas= temas+[(j,0)] #(TemaNumerico,Contador)

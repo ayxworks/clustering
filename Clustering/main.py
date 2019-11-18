@@ -38,11 +38,8 @@ def runClusteringPruebas(argumentos):
         print('4: Anadir nuevas instancias')
         vectoresTest, ndocs, nNew = preproceso.preprocesar_newInst('/preproceso/raw_tfidf', argumentos.backup_datos, argumentos.newInst, "/preproceso/vocabulario_train.txt", "/preproceso/lista_temas.txt")
         instancias = util.cargar(os.getcwd()+argumentos.vector_tupla)
-        instsAClasif = list(range(0, nNew))
+        instsAClasif = list(range(ndocs+1, ndocs+nNew+1))
         datosTest=util.cargar(os.getcwd()+'/preproceso/lista_articulos_test.txt')
-        ndocs = len(instancias)
-        nNew = len(instancias)+ len(datosTest) +1
-        instsAClasif = list(range(ndocs, nNew))
         agrupacion = explorar.agruparInstanciasPorCluster('/resultados/iter.txt',instancias,3,instsAClasif, vectoresTest, datosTest)
         for each in agrupacion:
             print (each[2],each[3])
@@ -116,7 +113,7 @@ def readCommand( argv ):
     parser.add_option('-c', '--vector_tupla', action='store', dest='vector_tupla',
                       help='Path de los vectores para hacer el cluster', default='/preproceso/train_tfidf.txt')
     parser.add_option('-n', '--newInst', action='store', dest='newInst',
-                      help='Para añadir nuevas instancias al cluster', default='/test/new')
+                      help='Para añadir nuevas instancias al cluster', default='test')
     parser.add_option('-d', '--distancia', action='store', dest='distancia',
                       help='Elegir la ecuación para las distancias 1=manhattan, 2=euclidea (predeterminado)', type="int", default=2)
 
