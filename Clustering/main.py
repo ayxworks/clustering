@@ -28,7 +28,7 @@ def runClusteringPruebas(argumentos):
     if not argumentos.skip_evaluacion:
         print('3: Evaluando')
         ev = evaluador.Evaluador()
-        path = util.cargar(os.getcwd()+argumentos.evaluacion)
+        path = util.cargar(os.getcwd()+ argumentos.evaluacion)
         instancias =  util.cargar(os.getcwd()+argumentos.vector_tupla)
         ev.evaluar(path, instancias)
         print ('Ha tardado en evaluar ', calc_tiempo(comienzo), 'segundos!')    
@@ -101,7 +101,7 @@ def readCommand( argv ):
                       help='Flag para saltarse el apartado de anadir instancias del test que no estan en el cluster', default=True)
     parser.add_option('-a', '--asignar_cluster', dest='asignar_cluster',
                       help='Elegir un cluster si ya hay una estructura', default='/resultados/datosAL.txt')
-    parser.add_option('-e', '--evaluation', dest='evaluation',
+    parser.add_option('-e', '--evaluacion', dest='evaluacion',
                       help='Se hace la evaluacion del cluster', default='/resultados/dist.txt')
     parser.add_option('-i', '--iteraciones', dest='iteraciones',
                       help='Path de las iteraciones del cluster', default='/resultados/iteraciones.txt')
