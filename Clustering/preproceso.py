@@ -434,7 +434,7 @@ def preprocesar_newInst(tfidf_path, train_path, newData_path, vocabulario_path, 
     util.guardar(os.getcwd()+"/preproceso/new_lista_articulos.txt", documentos)
     listaVocabulario = util.cargar(os.getcwd()+vocabulario_path)
     tfidf = Tf_Idf()
-    tfidf.generar_vector_tupla_pesos(documentos)
+    tfidf.generar_vector_tupla_pesos(newData)
     selector = SelectorAtributos(tfidf.vector,documentos,"newInst")
     selector.crear_dataset_especifico(tfidf.vector, documentos, "test", vocabulario_path)
     util.guardar(os.getcwd()+"/preproceso/new_tfidf.txt", selector.espacio_vectorial)
