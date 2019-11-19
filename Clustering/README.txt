@@ -1,10 +1,10 @@
-Para ejecutar el preproceso 
+Para ejecutar el preproceso hace falta tener las instancias en una carpeta datos y tener una carpeta preproceso creada
 python3 main.py -r
 
-Para ejecutar el clustering
+Para ejecutar el clustering hace falta tener una carpeta resultados
 python3 main.py -s
 
-para ejecutar la evaluación del cluster
+para ejecutar la evaluaciÃ³n del cluster
 python3 main.py -t
 
 para agrupar instancias al cluster mas cercano y devolver el tema estimado, para evaluar nuevas instancias, tienen que estar metidas en la carpeta test
@@ -58,8 +58,8 @@ Opciones:
   -c VECTOR_TUPLA, --vector_tupla=VECTOR_TUPLA
                         Path de los vectores para hacer el cluster
   -n NEWINST, --newInst=NEWINST
-                        Para añadir nuevas instancias al cluster
+                        Para aÃ±adir nuevas instancias al cluster
   -d DISTANCIA, --distancia=DISTANCIA
-                        Elegir la ecuación para las distancias 1=manhattan,
+                        Elegir la ecuaciÃ³n para las distancias 1=manhattan,
                         2=euclidea (predeterminado)
 
