@@ -91,10 +91,15 @@ def agruparInstanciasPorCluster(path,instancias,numClus,instsAClasif, vectoresTe
             c+=1
 
         iteraciones = ut.cargar(os.getcwd()+path)
+        print("a")
         clusters = iteraciones[len(instancias) - numClus]; "Sabiendo la posicion se que cluster llevarme"
+        print("b")
         tema= temaMasComunEnInstancia(clusters[cAct],vecInst); "Pasar instancias del cluster del cent, el id y vector de instAClasif"
+        print("c")
         temaReal = datosTest.tema_numerico[inst]
+        print("d")
         agrupacion.append((inst,cent,tema, temaReal)) #Instancia, centroide, tema agrupado, tema real
+        print("e")
 
 
     return agrupacion
@@ -106,13 +111,17 @@ def temaMasComunEnInstancia(instCluster,vecInst): #instCluster son posiciones, i
     vectoresTrain=ut.cargar(os.getcwd()+'/preproceso/train_tfidf.txt')
     datosTrain=ut.cargar(os.getcwd()+'/preproceso/lista_articulos_train.txt')
     j=0
+    print("a1")
+
     while j<121:
         temas= temas+[(j,0)] #(TemaNumerico,Contador)
     instancias=[] #Lista de 10 instancias mas cercanas a la instancia test
     distancias=[] #Lista de distancias de instancias cluster a instancia test
 
     for instCl in instCluster: #Instancias del cluster
-        vecInstCl=vectoresTrain.vector[instCl]
+        vecInstCl=vectoresTrain[instCl]
+        len(vecInstCl)
+        len(vecInst)
         distancias.append(instCl,ut.calcularDistancia(vecInstCl,vecInst,2))#Coger la menor (Instancia cluster, distancia)
     while i>=10:
         actual = min(distancias, key = lambda t: t[1]) #Devuelve la tupla con la instancia del cluster y la distancia minima a la distancia a clasificar.
