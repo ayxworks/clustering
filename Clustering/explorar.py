@@ -94,9 +94,10 @@ def agruparInstanciasPorCluster(path,instancias,numClus,instsAClasif, vectoresTe
         print("a")
         clusters = iteraciones[len(instancias) - numClus]; "Sabiendo la posicion se que cluster llevarme"
         print("b")
+        print(cAct)
         tema= temaMasComunEnInstancia(clusters[cAct],vecInst); "Pasar instancias del cluster del cent, el id y vector de instAClasif"
         print("c")
-        temaReal = datosTest.tema_numerico[inst]
+        temaReal = datosTest[inst].tema_numerico
         print("d")
         agrupacion.append((inst,cent,tema, temaReal)) #Instancia, centroide, tema agrupado, tema real
         print("e")
@@ -110,19 +111,19 @@ def temaMasComunEnInstancia(instCluster,vecInst): #instCluster son posiciones, i
     temas=[]
     vectoresTrain=ut.cargar(os.getcwd()+'/preproceso/train_tfidf.txt')
     datosTrain=ut.cargar(os.getcwd()+'/preproceso/lista_articulos_train.txt')
+    listaTemas=ut.cargar(os.getcwd()+'/preproceso/new_lista_temas.txt')
     j=0
-    print("a1")
-
-    while j<121:
+    print("Temas totales: " + str(len(listaTemas)))
+    while j<len(listaTemas):
         temas= temas+[(j,0)] #(TemaNumerico,Contador)
+        j=j+1
     instancias=[] #Lista de 10 instancias mas cercanas a la instancia test
     distancias=[] #Lista de distancias de instancias cluster a instancia test
-
     for instCl in instCluster: #Instancias del cluster
         vecInstCl=vectoresTrain[instCl]
         len(vecInstCl)
         len(vecInst)
-        distancias.append(instCl,ut.calcularDistancia(vecInstCl,vecInst,2))#Coger la menor (Instancia cluster, distancia)
+        distancias.append([(instCl,ut.calcularDistancia(vecInstCl,vecInst,2))])#Coger la menor (Instancia cluster, distancia)
     while i>=10:
         actual = min(distancias, key = lambda t: t[1]) #Devuelve la tupla con la instancia del cluster y la distancia minima a la distancia a clasificar.
         distancias.remove(actual)
@@ -138,8 +139,8 @@ def temaMasComunEnInstancia(instCluster,vecInst): #instCluster son posiciones, i
                 temas[t][1]+=1
                 t=121
             t+=1
-
     tema=max(temas,key = lambda t: t[1]) #Devuelve el tema que mas veces ha aparecido
+    print(tema)
     return tema[0]
 
     

@@ -426,7 +426,7 @@ def preprocesar_newInst(tfidf_path, train_path, newData_path, vocabulario_path, 
     #tfidf = util.cargar(os.getcwd()+ tfidf_path)
     n_new_inst = len(newData)
     lista = list(crearListaTemasTotales(newData) & set(util.cargar(os.getcwd()+lista_temas_path)))
-    util.guardar(os.getcwd()+'/preproceso/new_lista_temas', lista)
+    util.guardar(os.getcwd()+'/preproceso/new_lista_temas.txt', lista)
     for doc in newData:
         doc.asignarTemaNumerico(lista)
     train = util.cargar(os.getcwd()+train_path)

@@ -38,13 +38,15 @@ def runClusteringPruebas(argumentos):
         print('4: Anadir nuevas instancias')
         vectoresTest, ndocs, nNew = preproceso.preprocesar_newInst('/preproceso/raw_tfidf', argumentos.backup_datos, argumentos.newInst, "/preproceso/vocabulario_train.txt", "/preproceso/lista_temas.txt")
         instancias = util.cargar(os.getcwd()+argumentos.vector_tupla)
-        instsAClasif = list(range(ndocs+1, ndocs+nNew+1))
-        datosTest=util.cargar(os.getcwd()+'/preproceso/lista_articulos_test.txt')
+        #instsAClasif = list(range(ndocs+1, ndocs+nNew+1))
+        datosTest=util.cargar(os.getcwd()+'/preproceso/new_lista_articulos.txt')
+        instsAClasif = list(range(1, nNew+1))
         agrupacion = explorar.agruparInstanciasPorCluster('/resultados/iter.txt',instancias,3,instsAClasif, vectoresTest, datosTest)
         for each in agrupacion:
             print (each[2],each[3])
         print ('Ha tardado en anadir una nueva instancia ', calc_tiempo(comienzo), 'segundos!')
     ##########################################################################################
+    #no funciona de momento
     if not argumentos.skip_test:
         print('5: Anadir nuevas instancias del conjunto separado test')
         vector_dataset_test, ndocs, nNew = preproceso.preprocesar_test('/preproceso/raw_tfidf', argumentos.backup_datos, argumentos.backup_datos_test, "/preproceso/vocabulario_train.txt", "/preproceso/lista_temas.txt")
