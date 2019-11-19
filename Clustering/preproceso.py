@@ -287,6 +287,7 @@ class SelectorAtributos:
         """
         #cambiar a vector de tuplas
         self.atributos = util.cargar(os.getcwd()+path_vocabulario)
+        self.espacio_vectorial = []
         for atributos_doc in self.atributos:
             for i, documento in enumerate(documentos):
                 doc = list()
@@ -366,7 +367,7 @@ def preprocesar_train(directorio_ruta):
     print('\nGenerando los vectores de las instancias')
     train, test = shuffle_split(directorio_ruta)
     lista = list(crearListaTemasTotales(train) & crearListaTemasTotales(test))
-    print("Hay " + str(len(lista)) + "temas totales en el conjunto de datos analizados")
+    print("Hay " + str(len(lista)) + " temas totales en el conjunto de datos analizados")
     for doc in train:
         doc.asignarTemaNumerico(lista)
     util.guardar(os.getcwd()+"/preproceso/lista_temas.txt", lista)
