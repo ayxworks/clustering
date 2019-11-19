@@ -90,7 +90,7 @@ class Datos:
             self.articulo.titulo = titulo.text
         if cuerpo != None:
             self.palabras.cuerpo = self.tokenizacion(cuerpo.text, boolEtiqueta)
-            self.articulo.titulo = cuerpo.text
+            self.articulo.cuerpo = cuerpo.text
 
     def tokenizacion(self, texto, bool_etiquetas = False):
         """
@@ -448,3 +448,4 @@ def instancia_articulo(indice, documentos):
     """
     print(documentos[indice].articulo.titulo)
     print(documentos[indice].articulo.cuerpo)
+    print(documentos[indice].palabras.cuerpo)
