@@ -456,7 +456,7 @@ def instancia_articulo(indice, documentos):
     print(documentos[indice].articulo.titulo)
     print("Cuerpo:")
     print(documentos[indice].palabras.cuerpo)
-    print("Cuerpo:")
+    print("Temas:")
     print(documentos[indice].temas)
 
 def temas_totales_print(temas):

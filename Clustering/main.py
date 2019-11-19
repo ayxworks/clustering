@@ -38,12 +38,16 @@ def runClusteringPruebas(argumentos):
         print('4: Anadir nuevas instancias')
         vectoresTest, ndocs, nNew = preproceso.preprocesar_newInst('/preproceso/raw_tfidf', argumentos.backup_datos, argumentos.newInst, "/preproceso/vocabulario_train.txt", "/preproceso/lista_temas.txt")
         instancias = util.cargar(os.getcwd()+argumentos.vector_tupla)
-        instsAClasif = list(range(ndocs+1, ndocs+nNew))
+        instsAClasif = list(range(ndocs, ndocs+nNew))
         datosTest=util.cargar(os.getcwd()+'/preproceso/new_lista_articulos.txt')
+        lista_temas = util.cargar(os.getcwd()+'/preproceso/new_lista_temas.txt')
         #instsAClasif = list(range(1, nNew+1))
         agrupacion = explorar.agruparInstanciasPorCluster('/resultados/iter.txt',instancias,3,instsAClasif, vectoresTest, datosTest)
         for each in agrupacion:
-            print ("Instancia: " + str(each[0]) +", tema estimado: " +  str(each[2]) + ", Tema real: "+ str(each[3]))
+            print ("Instancia: " + str(each[0] +1) +", tema estimado: " +  str(each[2]) + ", Tema real: "+ str(each[3]))
+            if len(each[3])>0:
+                for temaN in each[3]:
+                    print("El tema "+ str(temaN) + " es " + str(lista_temas[temaN]))  
         print ('Ha tardado en anadir una nueva instancia ', calc_tiempo(comienzo), 'segundos!')
     ##########################################################################################
     #no funciona de momento
@@ -53,10 +57,16 @@ def runClusteringPruebas(argumentos):
         instancias = util.cargar(os.getcwd()+argumentos.vector_tupla)
         vectoresTest = util.cargar(os.getcwd()+'/preproceso/test_tfidf.txt')
         datosTest=util.cargar(os.getcwd()+argumentos.backup_datos_test)
-        instsAClasif = list(range(0, nNew))
+        lista_temas = util.cargar(os.getcwd()+'/preproceso/new_lista_temas.txt')
+        instsAClasif = list(range(0, nNew+1))
         agrupacion = explorar.agruparInstanciasPorCluster('/resultados/iter.txt',instancias,3,instsAClasif, vector_dataset_test, datosTest)
         for each in agrupacion:
             print (each[2],each[3])
+            print(type(each[3]))
+            if len(each[3])>0:
+                for temaN in each[3]:
+                    print("El tema "+ str(temaN) + " es " + str(lista_temas[temaN]))  
+        
         print ('Ha tardado en anadir una nueva instancia ', calc_tiempo(comienzo), 'segundos!')
     ##########################################################################################
     if not argumentos.get_instance:
