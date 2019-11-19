@@ -108,16 +108,14 @@ def temaMasComunEnInstancia(instCluster,vecInst): #instCluster son posiciones, i
     listaTemas=ut.cargar(os.getcwd()+'/preproceso/new_lista_temas.txt')
     j=0
     while j<len(listaTemas):
-        temas= temas+[(j,0)] #(TemaNumerico,Contador)
+        temas.append([j,0]) #(TemaNumerico,Contador)
         j=j+1
     instancias=[] #Lista de 10 instancias mas cercanas a la instancia test
     distancias=[] #Lista de distancias de instancias cluster a instancia test
     for instCl in instCluster: #Instancias del cluster
         vecInstCl=vectoresTrain[instCl]
-        len(vecInstCl)
-        len(vecInst)
-        distancias.append([(instCl,ut.calcularDistancia(vecInstCl,vecInst,2))])#Coger la menor (Instancia cluster, distancia)
-    while i>=10:
+        distancias.append([instCl,ut.calcularDistancia(vecInstCl,vecInst,2)])#Coger la menor (Instancia cluster, distancia)
+    while i<=10:
         actual = min(distancias, key = lambda t: t[1]) #Devuelve la tupla con la instancia del cluster y la distancia minima a la distancia a clasificar.
         distancias.remove(actual)
         instancias.append(actual[0])
@@ -125,12 +123,11 @@ def temaMasComunEnInstancia(instCluster,vecInst): #instCluster son posiciones, i
 
     "Buscar tema mayor entre las 10 instancias y ese sera el de la instancia a clasificar."
     for posInst in instancias:
-        indTema = datosTrain.tema_numerico[posInst]
+        indTema = datosTrain[posInst].tema_numerico
         t=0
-        while t<121:
-            if t==indTema:
+        while t<len(listaTemas):
+            if t in indTema:
                 temas[t][1]+=1
-                t=121
             t+=1
     tema=max(temas,key = lambda t: t[1]) #Devuelve el tema que mas veces ha aparecido
     #print(tema)

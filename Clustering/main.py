@@ -40,14 +40,15 @@ def runClusteringPruebas(argumentos):
         instancias = util.cargar(os.getcwd()+argumentos.vector_tupla)
         instsAClasif = list(range(ndocs, ndocs+nNew))
         datosTest=util.cargar(os.getcwd()+'/preproceso/new_lista_articulos.txt')
-        lista_temas = util.cargar(os.getcwd()+'/preproceso/new_lista_temas.txt')
+        lista_temas = util.cargar(os.getcwd()+'/preproceso/lista_temas.txt')
         #instsAClasif = list(range(1, nNew+1))
         agrupacion = explorar.agruparInstanciasPorCluster('/resultados/iter.txt',instancias,3,instsAClasif, vectoresTest, datosTest)
         for each in agrupacion:
-            print ("Instancia: " + str(each[0] +1) +", tema estimado: " +  str(each[2]) + ", Tema real: "+ str(each[3]))
-            if len(each[3])>0:
-                for temaN in each[3]:
-                    print("El tema "+ str(temaN) + " es " + str(lista_temas[temaN]))  
+            print ("Instancia: " + str(each[0] +1) +", Tema estimado: " +  str(each[2]))
+            #if len(each[3])>0:
+            #   for temaN in each[3]:
+            #       print("El tema "+ str(temaN) + " es " + str(lista_temas[temaN]))
+            print("El tema "+ str(each[2]) + " es " + str(lista_temas[each[2]]))
         print ('Ha tardado en anadir una nueva instancia ', calc_tiempo(comienzo), 'segundos!')
     ##########################################################################################
     #no funciona de momento
