@@ -61,7 +61,12 @@ def runClusteringPruebas(argumentos):
         documentos = util.cargar(os.getcwd()+argumentos.backup_datos)
         preproceso.instancia_articulo(argumentos.indice_instancia, documentos)
         print ('Se ha tardado en buscar la instancia ', calc_tiempo(comienzo), 'segundos!')
-
+    ##########################################################################################
+    if not argumentos.get_temas:
+        temas = util.cargar(os.getcwd()+"/preproceso/lista_temas.txt")
+        preproceso.temas_totales_print(temas)
+        print ('Se ha tardado en buscar la instancia ', calc_tiempo(comienzo), 'segundos!')    
+    
     print ('\nFin del programa: ', calc_tiempo(comienzo), 'segundos!')
     print("Gracias por utilizar nuestro programa\n")
 
@@ -86,6 +91,8 @@ def readCommand( argv ):
                       help='Pruebas', default='lista_articulos_test')
     parser.add_option('-g','--get_instance', action='store_false', dest='get_instance',
                       help='Coge la instancia del indice seleccionado e imprime por pantalla', default=True)
+    parser.add_option('-j','--get_temas', action='store_false', dest='get_temas',
+                      help='Coge los temas procesados e imprime por pantalla', default=True)
     parser.add_option('-i', '--indice_instancia', action='store', dest='indice_instancia',
                       help='Se elige el indice de una instancia', default=0)
     parser.add_option('-r','--skip_preproceso', action='store_false', dest='skip_preproceso',

@@ -436,6 +436,7 @@ def preprocesar_newInst(tfidf_path, train_path, newData_path, vocabulario_path, 
     tfidf = Tf_Idf()
     tfidf.generar_vector_tupla_pesos(documentos)
     selector = SelectorAtributos(tfidf.vector,documentos,"newInst")
+    selector.crear_dataset_especifico(tfidf.vector, documentos, "test", vocabulario_path)
     util.guardar(os.getcwd()+"/preproceso/new_tfidf.txt", selector.espacio_vectorial)
     print('Preproceso completado!')
     return selector.espacio_vectorial, n_docs, n_new_inst
@@ -446,6 +447,12 @@ def instancia_articulo(indice, documentos):
         Pre: El indice en el cluster y los documentos con los que se ha formado el cluster
         Post: Se imprime por pantalla el articulo deseado
     """
+    print("Titulo:")
     print(documentos[indice].articulo.titulo)
-    print(documentos[indice].articulo.cuerpo)
+    print("Cuerpo:")
     print(documentos[indice].palabras.cuerpo)
+    print("Cuerpo:")
+    print(documentos[indice].temas)
+
+def temas_totales_print(temas):
+    print(temas)
