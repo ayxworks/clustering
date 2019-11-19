@@ -366,7 +366,7 @@ def preprocesar_train(directorio_ruta):
     #directorio = 'datos'
     print('\nGenerando los vectores de las instancias')
     train, test = shuffle_split(directorio_ruta)
-    lista = list(crearListaTemasTotales(train) & crearListaTemasTotales(test))
+    lista = list(crearListaTemasTotales(train) ^ crearListaTemasTotales(test))
     print("Hay " + str(len(lista)) + " temas totales en el conjunto de datos analizados")
     for doc in train:
         doc.asignarTemaNumerico(lista)
@@ -397,7 +397,7 @@ def preprocesar_test(tfidf_path, train_path, test_path, vocabulario_path, lista_
     print('\nGenerando los vectores de las instancias')
     n_docs = len(tfidf.vector)
     n_new_inst = len(test)
-    lista = list(crearListaTemasTotales(test) & set(util.cargar(os.getcwd()+lista_temas_path)))
+    lista = list(crearListaTemasTotales(test) ^ set(util.cargar(os.getcwd()+lista_temas_path)))
     util.guardar(os.getcwd()+'/preproceso/all_lista_temas', lista)
     for doc in test:
         doc.asignarTemaNumerico(lista)
@@ -425,7 +425,11 @@ def preprocesar_newInst(tfidf_path, train_path, newData_path, vocabulario_path, 
     newData = escanear_docs(newData_path)
     #tfidf = util.cargar(os.getcwd()+ tfidf_path)
     n_new_inst = len(newData)
-    lista = list(crearListaTemasTotales(newData) & set(util.cargar(os.getcwd()+lista_temas_path)))
+    lista_temas = util.cargar(os.getcwd()+lista_temas_path)
+    nuevos_temas = crearListaTemasTotales(newData)
+    #lista = list(nuevos_temas & set(lista_temas))
+    lista = list(nuevos_temas ^ set(lista_temas)) # equivale a lista= set(lista_temas).symmetric_difference(nuevos_temas)
+
     util.guardar(os.getcwd()+'/preproceso/new_lista_temas.txt', lista)
     for doc in newData:
         doc.asignarTemaNumerico(lista)

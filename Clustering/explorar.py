@@ -54,7 +54,6 @@ Post: Los centroides calculados
 def clustersIteracion(path, instancias, numclus):
     iteraciones = ut.cargar(os.getcwd()+path)
     clusters = iteraciones[len(instancias)-numclus]
-    print(len(clusters))
     centroides = ut.generarLista(len(clusters))
     i = 0
     
@@ -79,9 +78,9 @@ def agruparInstanciasPorCluster(path,instancias,numClus,instsAClasif, vectoresTe
     cAct=0
     c=0;"Indice centroide"
     for inst in instsAClasif: #Recorrer instancias a clasificar
-        print(inst)
         vecInst=vectoresTest[inst] #Coger el vector de la instancia TODO
         mindist = 999999
+        c=0
         for cent in centroides: #Por cada centroide...
             distancia = ut.calcularDistancia(cent,vecInst,1) #Buscar menor distancia manhattan centroide e instancia
             if distancia<mindist:
@@ -91,16 +90,11 @@ def agruparInstanciasPorCluster(path,instancias,numClus,instsAClasif, vectoresTe
             c+=1
 
         iteraciones = ut.cargar(os.getcwd()+path)
-        print("a")
         clusters = iteraciones[len(instancias) - numClus]; "Sabiendo la posicion se que cluster llevarme"
-        print("b")
-        print(cAct)
         tema= temaMasComunEnInstancia(clusters[cAct],vecInst); "Pasar instancias del cluster del cent, el id y vector de instAClasif"
-        print("c")
         temaReal = datosTest[inst].tema_numerico
-        print("d")
         agrupacion.append((inst,cent,tema, temaReal)) #Instancia, centroide, tema agrupado, tema real
-        print("e")
+
 
 
     return agrupacion
@@ -113,7 +107,6 @@ def temaMasComunEnInstancia(instCluster,vecInst): #instCluster son posiciones, i
     datosTrain=ut.cargar(os.getcwd()+'/preproceso/lista_articulos_train.txt')
     listaTemas=ut.cargar(os.getcwd()+'/preproceso/new_lista_temas.txt')
     j=0
-    print("Temas totales: " + str(len(listaTemas)))
     while j<len(listaTemas):
         temas= temas+[(j,0)] #(TemaNumerico,Contador)
         j=j+1
@@ -140,7 +133,7 @@ def temaMasComunEnInstancia(instCluster,vecInst): #instCluster son posiciones, i
                 t=121
             t+=1
     tema=max(temas,key = lambda t: t[1]) #Devuelve el tema que mas veces ha aparecido
-    print(tema)
+    #print(tema)
     return tema[0]
 
     
